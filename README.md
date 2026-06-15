@@ -1,25 +1,42 @@
 # AI-Driven Ticket Routing System
 
 ## Overview
-The **AI-Driven Ticket Routing System** is an intelligent automation pipeline designed to modernize customer support. By leveraging Natural Language Processing (NLP) and a dynamic business rules engine, this system eliminates manual triage, reduces response times, and ensures that critical customer issues never fall through the cracks.
+This AI-Driven Ticket Routing System modernizes support by replacing manual triage with an automated NLP pipeline. It categorizes tickets using machine learning and routes them based on real-time confidence. Ambiguous cases move to a Human Intervention Panel, ensuring operational efficiency, lower latency, and improved CSAT scores for your support team.
 
 ## Project Goal
 To replace inefficient, manual ticket routing with an automated, AI-driven pipeline, thereby eliminating human error and significantly decreasing ticket resolution latency.
 
 ## Expected Business Results
-* **For Support Agents**: A drastic reduction in manual triage time, allowing them to focus on resolving complex issues rather than sorting them.
-* **For Customer Success**: Higher Customer Satisfaction (CSAT) scores driven by faster, more accurate ticket routing.
-* **For Management**: Optimized operational costs through increased efficiency and reduced overhead in the support department.
+* **For Support Agents**: A drastic reduction in manual triage time.
+* **For Customer Success**: Higher CSAT scores driven by faster, accurate routing.
+* **For Management**: Optimized operational costs through increased efficiency.
 
 ## 🌟 Key Features
-* **Intelligent Categorization**: Uses a trained `LogisticRegression` model with TF-IDF vectorization to map incoming emails to five distinct departments: *Account Management, Billing, General Inquiry, Logistics, and Technical.*
-* **Precision Confidence Scoring**: Features real-time confidence metrics using `predict_proba()`. Tickets failing to meet the `0.6` confidence threshold are automatically diverted to a **Human Intervention Panel** for expert oversight.
-* **Dynamic Prioritization**: Performs automated sentiment and keyword analysis to flag "High Priority" items—like legal threats or crushed packages—so they hit the front of the queue.
-* **Human-in-the-Loop (HITL)**: Built-in agent feedback loops allow support staff to override AI routing, ensuring the model continuously learns from real-world corrections.
+* **Intelligent Categorization**: Uses `LogisticRegression` with TF-IDF to map emails to 5 departments.
+* **Precision Confidence Scoring**: Features real-time metrics using `predict_proba()`.
+* **Dynamic Prioritization**: Automated sentiment/keyword analysis to flag "High Priority" items.
+* **Human-in-the-Loop (HITL)**: Agent feedback loops to override routing and retrain the model.
+
+## 🔄 The Pipeline
+1. **Ingestion**: Raw ticket data is loaded.
+2. **ML Analysis**: Text is processed via TF-IDF and classified.
+3. **Policy Validation**: Rules are applied from `company_policy.json`.
+4. **Confidence Check**: Probabilities < 0.6 flag the ticket for **Human Intervention**.
+5. **Review & Draft**: Agents use the **Streamlit UI** to verify or draft responses.
+
+
+
+## 🏗 Project Structure
+* `modules/`: Core logic (`processor.py`, `llm_client.py`, `orchestrator.py`).
+* `data/`: Datasets, models, and `company_policy.json`.
+* `ui/`: Streamlit-based agent dashboard.
 
 ## 🛠 Getting Started
-1. **Environment Setup**: Install dependencies via `pip install -r requirements.txt`.
-2. **Configure**: Tweak your routing rules in `data/company_policy.json` (categories and keywords).
-3. **Launch Engine**: Run the orchestration module to begin automated processing.
-4. **Launch UI**: Start the agent dashboard with: streamlit run ui.py
-5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance the trade-off between AI automation and human review volume.
+1. **Environment Setup**: `pip install -r requirements.txt`.
+2. **Configure**: Tweak routing rules in `data/company_policy.json`.
+3. **Launch Engine**: `python modules/orchestrator.py`
+4. **Launch UI**: `streamlit run ui.py`
+5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py`.
+
+---
+*If you found this helpful or have suggestions, please open an issue or start a discussion!*
