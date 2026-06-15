@@ -20,5 +20,6 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 ## 🛠 Getting Started
 1. **Environment Setup**: Install dependencies via `pip install -r requirements.txt`.
 2. **Configure**: Tweak your routing rules in `data/company_policy.json` (categories and keywords).
-3. **Launch**: Run the orchestration module to begin automated processing.
-4. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance the trade-off between AI automation and human review volume.
+3. **Launch Engine**: Run the orchestration module to begin automated processing.
+4. **Launch UI**: Start the agent dashboard with: streamlit run ui.py
+5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance the trade-off between AI automation and human review volume.
