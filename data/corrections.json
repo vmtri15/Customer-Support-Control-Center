@@ -1,0 +1,44 @@
+[
+    {
+        "ticket_id": "T002",
+        "original_recommended_department": null,
+        "corrected_department": "Sales",
+        "reason": "Customer inquiry regarding subscription pricing",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": "T001",
+        "original_recommended_department": "AI_Auto",
+        "corrected_department": "Sales",
+        "reason": "REfund",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": "T001",
+        "original_recommended_department": "AI_Auto",
+        "corrected_department": "Sales",
+        "reason": "REfund",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": "T001",
+        "original_recommended_department": "AI_Auto",
+        "corrected_department": "Sales",
+        "reason": "REfund",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": "T007",
+        "original_recommended_department": "AI_Auto",
+        "corrected_department": "Sales",
+        "reason": "refund",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": "T007",
+        "original_recommended_department": "AI_Auto",
+        "corrected_department": "Sales",
+        "reason": "refund",
+        "status": "Human_Reviewed"
+    }
+]

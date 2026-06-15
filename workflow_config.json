@@ -1,0 +1,8 @@
+{
+    "pipeline": [
+      {"name": "Ingestion", "module": "Ingestor"},
+      {"name": "NLP_Analysis", "module": "NLP_Engine"},
+      {"name": "BA_Rules_Engine", "module": "Rules_Engine"},
+      {"name": "Routing_Execution", "module": "Router"}
+    ]
+  }

@@ -1,0 +1,20 @@
+[
+    {
+      "id": "T001",
+      "customer": "Nguyen Van A",
+      "email_content": "I am very frustrated. My package arrived damaged and the glasses are broken. I need a refund immediately.",
+      "tier": "Bronze"
+    },
+    {
+      "id": "T002",
+      "customer": "Tran Thi B",
+      "email_content": "Hi, I love the product, but can you help me understand the pricing structure for the annual subscription?",
+      "tier": "Gold"
+    },
+    {
+      "id": "T003",
+      "customer": "Le Van C",
+      "email_content": "The app keeps crashing whenever I try to checkout. This is a critical bug.",
+      "tier": "Silver"
+    }
+  ]

@@ -1,0 +1,15 @@
+{
+    "department_rules": {
+      "Retention": ["refund", "money back", "return", "chargeback"],
+      "Logistics": ["package", "shipping", "delivery", "tracking", "arrived"],
+      "Technical": ["bug", "crash", "error", "glitch", "app"]
+    },
+    "sentiment_thresholds": {
+      "critical_keywords": ["legal action", "lawsuit", "unacceptable"],
+      "priority_mapping": {
+        "Negative": "High",
+        "Neutral": "Medium",
+        "Positive": "Low"
+      }
+    }
+  }

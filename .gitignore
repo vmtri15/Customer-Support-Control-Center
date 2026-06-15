@@ -1,0 +1,18 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+
+# Trained models and local data
+/data/logreg_model.joblib
+/data/tfidf_vectorizer.joblib
+
+# Streamlit
+.streamlit/
