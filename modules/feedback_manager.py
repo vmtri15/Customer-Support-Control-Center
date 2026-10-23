@@ -1,3 +1,4 @@
+import datetime
 import json
 from pathlib import Path
 
@@ -31,31 +32,39 @@ class FeedbackManager:
         with self.corrections_path.open("w", encoding="utf-8") as f:
             json.dump(self.corrections, f, indent=4, ensure_ascii=False)
             
-        # Update Vector DB to complete the Learning Loop
+        # Update Vector DB: similar low-confidence tickets now follow this correction
         if email_content:
             try:
-                from modules.vector_store import get_chroma_client, get_ticket_collection
-                client = get_chroma_client()
-                collection = get_ticket_collection(client)
-                
-                collection.upsert(
-                    documents=[email_content],
-                    metadatas=[{"category": corrected_dept, "source": "human_correction"}],
-                    ids=[f"correction_{ticket_id}"]
-                )
+                from modules.vector_store import add_correction
+                add_correction(ticket_id, email_content, corrected_dept)
                 print(f"🧠 Vector DB updated: AI learned that Ticket {ticket_id} belongs to {corrected_dept}")
             except Exception as e:
                 print(f"⚠️ Failed to update Vector DB: {e}")
 
         print(f"✅ Feedback logged for Ticket {ticket_id}: Successfully re-routed to {corrected_dept}")
 
+    def log_reply(self, ticket_id: str, reply: str, replies_path: str | Path = "data/sent_replies.json") -> None:
+        """Append the agent-approved reply (as edited) to the sent-replies log."""
+        replies_path = Path(replies_path)
+        replies = json.loads(replies_path.read_text(encoding="utf-8")) if replies_path.exists() else []
+        replies.append({
+            "ticket_id": ticket_id,
+            "reply": reply,
+            "sent_at": datetime.datetime.now().isoformat(timespec="seconds"),
+        })
+        replies_path.write_text(json.dumps(replies, indent=4, ensure_ascii=False), encoding="utf-8")
+
     def latest_by_ticket(self) -> dict[str, dict]:
         """Latest correction per ticket id (later corrections win)."""
         return {str(c["ticket_id"]): c for c in self.corrections}
 
-    def calculate_kpi(self, total_processed: int) -> dict:
-        """Calculates business performance metrics (UAT KPIs)."""
-        total_corrections = len(self.latest_by_ticket())  # re-corrections of a ticket count once
+    def calculate_kpi(self, total_processed: int, ticket_ids=None) -> dict:
+        """Calculates business performance metrics (UAT KPIs). Pass ticket_ids to ignore corrections for tickets no longer in the data."""
+        corrected = self.latest_by_ticket()  # re-corrections of a ticket count once
+        if ticket_ids is not None:
+            known = {str(t) for t in ticket_ids}
+            corrected = {t: c for t, c in corrected.items() if t in known}
+        total_corrections = len(corrected)
         accuracy = 100.0
         if total_processed > 0:
             accuracy = ((total_processed - total_corrections) / total_processed) * 100.0

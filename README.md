@@ -17,7 +17,8 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Dynamic Prioritization**: Keyword-based sentiment analysis flags critical tickets (e.g. legal threats) as High priority.
 * **Human-in-the-Loop (HITL)**: Agents correct the department from a dropdown. Corrections apply immediately in the UI and are merged into the training data on the next retrain.
 * **Semi-supervised Training & Versioning**: Unlabelled tickets are labelled by the SVM, or by the LLM when the SVM is unsure (max 20 calls, answers validated against known departments). Each training run is saved as a version in `models/`, with accuracy measured on a held-out 20% of real labels.
-* **AI Reply Drafts**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies.
+* **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft and **Mark as Sent**, which logs it to `data/sent_replies.json` (email sending is not connected yet).
+* **Vector DB (ChromaDB)**: Tickets are embedded with `all-MiniLM-L6-v2`. Agents can **Show similar past tickets**, and low-confidence tickets that closely match (≥85% similar) a human correction are routed like it immediately, before any retrain. The index rebuilds automatically when `data/tickets.csv` changes.
 
 ## 🔄 The Pipeline
 1. **Ingestion**: Tickets are loaded from `data/tickets.csv`.
@@ -37,7 +38,8 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 * `data/`: Datasets, `company_policy.json` and `corrections.json`.
 * `models/`: Versioned trained models and `metadata.json`.
 * `ui.py`: Streamlit-based agent dashboard.
-* `convert_bitext.py`: Builds `data/tickets.csv`.
+* `convert_bitext.py`: Builds `data/tickets.csv` (including Bitext agent replies for RAG).
+* `build_vectordb.py`: Rebuilds the ChromaDB index manually.
 
 ## 🛠 Getting Started
 1. **Environment Setup**: `pip install -r requirements.txt`.
@@ -45,7 +47,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists.
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance automation against human review volume.
-6. **Check**: `python test_routing.py` runs the routing self-check.
+6. **Check**: `python test_routing.py` (routing and sentiment) and `python test_features.py` (training, feedback, Vector DB; runs in a temp folder).
 
 ---
 *If you found this helpful or have suggestions, please open an issue or start a discussion!*

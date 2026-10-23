@@ -109,6 +109,7 @@ def main():
     texts = list(df["instruction"]) + tech
     intents = list(df["intent"]) + ["technical_issue"] * len(tech)
     categories = list(df["category"]) + ["Technical"] * len(tech)
+    responses = list(df["response"]) + [""] * len(tech)  # phản hồi mẫu của nhân viên, dùng cho RAG
     n = len(texts)
     seconds_ago = rng.integers(0, 90 * 24 * 3600, n)
     timestamps = pd.Timestamp("2026-10-23") - pd.to_timedelta(seconds_ago, unit="s")
@@ -122,6 +123,7 @@ def main():
         "timestamp": timestamps.strftime("%Y-%m-%d %H:%M:%S"),
         "status": rng.choice(["Open", "Pending"], n),
         "category": categories,
+        "response": responses,
     })
 
     # Giữ các vé cũ đã có nhãn (tiếng Việt + ví dụ Technical mà Bitext thiếu); bỏ vé B* để chạy lại không bị trùng

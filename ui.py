@@ -5,7 +5,7 @@ import json
 # Import plotly để vẽ biểu đồ
 import plotly.express as px 
 from modules.processor import TicketProcessor, CONFIDENCE_THRESHOLD
-from modules.processor import train_new_model_background
+from modules.processor import train_new_model_background, is_training
 from modules.feedback_manager import FeedbackManager
 
 st.set_page_config(page_title="Enterprise AI Ticket Router", layout="wide", page_icon="🚀")
@@ -55,8 +55,10 @@ def ticket_actions_fragment(ticket, processor, feedback_mgr, selected_id):
     if draft_key not in st.session_state:
         st.session_state[draft_key] = ""
 
+    edit_key = f"editable_draft_{selected_id}"
     if st.button("Generate AI Reply", key=f"generate_draft_{selected_id}"):
         st.session_state[draft_key] = ""  # Clear previous draft
+        st.session_state.pop(edit_key, None)  # otherwise the text area keeps the old edited draft
         try:
             with st.spinner("Generating response via LLM..."):
                 stream = processor.generate_email_draft(ticket, stream=True)
@@ -78,10 +80,13 @@ def ticket_actions_fragment(ticket, processor, feedback_mgr, selected_id):
 
     # Display the editable text area if a draft exists
     if st.session_state[draft_key]:
-        st.text_area("Review and edit before sending:", value=st.session_state[draft_key], height=250, key=f"editable_draft_{selected_id}")
-        if st.button("Send to Customer", key=f"send_draft_{selected_id}"):
-            st.success("Email draft sent successfully!")
-            st.session_state[draft_key] = "" # Clear draft after sending
+        edited_reply = st.text_area("Review and edit before sending:", value=st.session_state[draft_key], height=250, key=edit_key)
+        # ponytail: chưa nối SMTP/helpdesk; chỉ ghi lại bản phản hồi đã duyệt. Nối gửi email thật tại đây.
+        if st.button("Mark as Sent", key=f"send_draft_{selected_id}"):
+            feedback_mgr.log_reply(selected_id, edited_reply)
+            st.success("Reply logged to data/sent_replies.json (email sending is not connected yet).")
+            st.session_state[draft_key] = ""
+            st.session_state.pop(edit_key, None)
 
     # --- KHU VỰC HUMAN-IN-THE-LOOP ---
     st.subheader("Human Intervention Panel")
@@ -166,6 +171,26 @@ def render_ticket_management():
                             for cat, p in sorted_probs:
                                 st.write(f"- **{cat}**: {p*100:.1f}%")
         
+                if ticket.get('routed_by_correction'):
+                    match = ticket['routed_by_correction']
+                    st.info(f"Routed like human-corrected ticket {match['ticket_id']} ({match['similarity']:.0%} similar).")
+
+                if st.button("Show similar past tickets", key=f"similar_{selected_id}"):
+                    try:
+                        from modules.vector_store import find_similar
+                        with st.spinner("Searching similar tickets (first search loads the index)..."):
+                            hits = find_similar([ticket['email_content']], n=6, exclude_ids=[selected_id])[0]
+                        # Bỏ các vé trùng y hệt nội dung (dữ liệu cũ có vé lặp)
+                        hits = [h for h in hits if h['text'] != ticket['email_content']][:5]
+                        for h in hits:
+                            source = "🧑 Human correction" if h['source'] == 'human_correction' else "Dataset"
+                            st.markdown(f"**{h['similarity']:.0%} similar** · {h['category']} · {source}  \n{h['text']}")
+                            if h.get('response'):
+                                with st.expander("Agent reply"):
+                                    st.write(h['response'])
+                    except Exception as e:
+                        st.error(f"Similar ticket search failed: {e}")
+
                 st.divider()
                 # Gọi Fragment xử lý các hành động (Generate AI Reply, Save Correction)
                 ticket_actions_fragment(ticket, processor, feedback_mgr, selected_id)
@@ -181,7 +206,7 @@ with tab_analytics:
     st.subheader("System Performance & Traffic Analysis")
     
     # Tính KPI
-    kpi = feedback_mgr.calculate_kpi(total_processed=len(tickets))
+    kpi = feedback_mgr.calculate_kpi(total_processed=len(tickets), ticket_ids=[t['id'] for t in tickets])
     
     col_kpi1, col_kpi2, col_kpi3 = st.columns(3)
     col_kpi1.metric("Total Tickets Processed", kpi['total_tickets_processed'])
@@ -214,6 +239,9 @@ with tab_admin:
     uploaded_file = st.file_uploader("Upload dataset mới (CSV, JSON, PDF, DOCX)", type=["csv", "json", "pdf", "docx"])
 
     def start_background_training(path):
+        if is_training():
+            st.warning("Một lần train khác đang chạy. Vui lòng đợi nó hoàn tất (xem Terminal).")
+            return
         # Cho phép thread sử dụng context của Streamlit
         from streamlit.runtime.scriptrunner import add_script_run_ctx
         st.info("Đang huấn luyện mô hình ngầm (Background). Bạn có thể tiếp tục sử dụng hệ thống! Hãy xem Terminal để biết tiến độ.")

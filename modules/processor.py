@@ -4,7 +4,6 @@ import os
 import shutil
 import datetime
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 import threading
 
 import pandas as pd
@@ -13,6 +12,7 @@ from sklearn.svm import LinearSVC
 from sklearn.calibration import CalibratedClassifierCV
 
 CONFIDENCE_THRESHOLD = 0.65
+CORRECTION_MATCH_SIMILARITY = 0.85  # cosine similarity để vé độ tự tin thấp đi theo một chỉnh sửa của nhân viên
 
 # Khởi tạo underthesea 1 lần duy nhất ở mức Global để tối ưu tốc độ
 try:
@@ -316,7 +316,11 @@ class MLClassifier:
                     try:
                         with open(self.metadata_path, "r") as f:
                             meta = json.load(f)
-                    except: pass
+                    except (json.JSONDecodeError, OSError) as e:
+                        # Giữ lại file hỏng thay vì âm thầm ghi đè lịch sử phiên bản
+                        backup = self.metadata_path.with_suffix(f".corrupt_{timestamp}.json")
+                        shutil.copy(self.metadata_path, backup)
+                        print(f"⚠️ metadata.json bị lỗi ({e}); đã sao lưu sang {backup}")
                 if "versions" not in meta: meta["versions"] = {}
                 meta["versions"][version_id] = {
                     "created_at": datetime.datetime.now().isoformat(),
@@ -341,30 +345,28 @@ class MLClassifier:
 
     def predict(self, text: str) -> tuple[str, float, dict]:
         """Predicts the category, returns confidence, and all probabilities."""
-        if not self.is_trained or not text.strip():
-            return "General Inquiry", 0.0, {}
-            
+        return self.predict_many([text])[0]
+
+    def predict_many(self, texts: list[str]) -> list[tuple[str, float, dict]]:
+        """Dự đoán theo lô: một lần transform + predict_proba cho tất cả vé (nhanh hơn nhiều so với từng vé)."""
+        default = ("General Inquiry", 0.0, {})
+        if not self.is_trained:
+            return [default] * len(texts)
+
         # Bước 1: Tiền xử lý (Preprocessing) trước khi dự đoán
-        processed_text = self._preprocess_text(text)
+        processed = [self._preprocess_text(t) if isinstance(t, str) else "" for t in texts]
+        valid = [i for i, p in enumerate(processed) if p]
+        results = [default] * len(texts)
+        if not valid:
+            return results
 
-        if not processed_text:
-            return "General Inquiry", 0.0, {}
-            
-        X_new = self.vectorizer.transform([processed_text])
-        
-        # 1. Get the probabilities for all categories
-        probs = self.model.predict_proba(X_new)[0]
-        
-        # 2. Identify the highest probability (the confidence)
-        confidence = float(max(probs))
-        
-        # 3. Identify the predicted category
-        prediction = self.model.predict(X_new)[0]
-
-        # 4. Map probabilities to category names
-        prob_dict = {str(self.model.classes_[i]): float(probs[i]) for i in range(len(probs))}
-        
-        return prediction, confidence, prob_dict
+        probs = self.model.predict_proba(self.vectorizer.transform([processed[i] for i in valid]))
+        classes = [str(c) for c in self.model.classes_]
+        for row, i in enumerate(valid):
+            best = int(probs[row].argmax())
+            prob_dict = dict(zip(classes, map(float, probs[row])))
+            results[i] = (classes[best], float(probs[row][best]), prob_dict)
+        return results
 
 
 class TicketProcessor:
@@ -482,6 +484,25 @@ class TicketProcessor:
         """
         return self.classifier.predict(text)
 
+    def reply_examples(self, ticket: dict, n: int = 3) -> str:
+        """RAG: phản hồi mẫu của nhân viên cho các vé tương tự, định dạng sẵn để chèn vào prompt."""
+        try:
+            from modules.vector_store import find_similar
+            hits = find_similar(
+                [ticket.get("email_content", "")], n=n,
+                where={"$and": [{"source": "dataset"}, {"response": {"$ne": ""}}]},
+                exclude_ids=[ticket.get("id")],
+            )[0]
+        except Exception as e:
+            print(f"⚠️ Không lấy được phản hồi mẫu từ Vector DB: {e}")
+            return ""
+        if not hits:
+            return ""
+        lines = ["\nPhản hồi mẫu của nhân viên cho các yêu cầu tương tự (chỉ để tham khảo nội dung xử lý):"]
+        for i, h in enumerate(hits, 1):
+            lines.append(f"{i}. Khách: \"{h['text']}\"\n   Nhân viên: \"{h['response'][:600]}\"")
+        return "\n".join(lines) + "\n"
+
     def generate_email_draft(self, ticket: dict, stream: bool = False):
         """
         AI-based Email Draft Generation using LLM API.
@@ -495,6 +516,7 @@ class TicketProcessor:
         email_content_snippet = email_content[:50]
         sentiment = ticket.get("sentiment", "Neutral")
         priority = ticket.get("priority", "Medium")
+        examples = self.reply_examples(ticket)
 
         prompt = f"""Dựa trên các thông tin sau:
 - Category: {category}
@@ -502,7 +524,8 @@ class TicketProcessor:
 - Customer: {customer_name}
 - Sentiment: {sentiment}
 - Priority: {priority}
-
+- Nội dung khách hàng: "{email_content}"
+{examples}
 Hãy viết một email phản hồi khách hàng bằng tiếng Anh, tuân thủ đúng định dạng mẫu dưới đây:
 
 SUBJECT: Update on your {category} request - Ref: {ticket_id}
@@ -521,7 +544,7 @@ The Support Team
 
 Yêu cầu:
 1. Thay thế [Empathy_Sentence] bằng một câu đồng cảm phù hợp (Negative: hối lỗi, Neutral: chuyên nghiệp).
-2. Thay thế [Action_Plan] bằng một câu cam kết thời gian phản hồi (High: trong 2 hours, Medium/Low: trong 24 hours).
+2. Thay thế [Action_Plan] bằng các bước xử lý cụ thể cho vấn đề này (dựa vào phản hồi mẫu nếu có, ngắn gọn, không dùng placeholder dạng {{{{...}}}}) và một câu cam kết thời gian phản hồi (High: trong 2 hours, Medium/Low: trong 24 hours).
 
 Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
 """
@@ -536,13 +559,13 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
             error_msg = f"Lỗi gọi LLM API khi tạo email draft: {e}"
             raise RuntimeError(error_msg)
 
-    def process_ticket(self, ticket: dict) -> dict:
+    def process_ticket(self, ticket: dict, prediction: tuple[str, float, dict] | None = None) -> dict:
         """Analyze sentiment, assign tags, classify category and validate routing."""
         email_content = ticket.get("email_content", "")
 
         processed = ticket.copy()
-        
-        predicted_category, confidence, prob_dict = self.classify_category(email_content)
+
+        predicted_category, confidence, prob_dict = prediction or self.classify_category(email_content)
         processed["confidence_score"] = round(confidence, 4)
         processed["category_probabilities"] = prob_dict
 
@@ -561,33 +584,77 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
         
         return processed
 
-    def process_all(self, max_workers: int = 5) -> list[dict]:
-        """
-        Processes all loaded tickets in parallel blocks to maximize local vLLM performance
-        and prevent UI hanging/timeouts on large datasets.
-        """
+    def process_all(self) -> list[dict]:
+        """Processes all loaded tickets, classifying them in one batch."""
         if not self.tickets:
             self.load_tickets()
-            
+
         if not self.tickets:
             return []
-            
-        # Use a ThreadPoolExecutor to handle multiple API/processing requests concurrently
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            processed_tickets = list(executor.map(self.process_ticket, self.tickets))
-            
-        return processed_tickets
+
+        texts = [t.get("email_content") if isinstance(t.get("email_content"), str) else "" for t in self.tickets]
+        predictions = self.classifier.predict_many(texts)
+        matches = self._follow_similar_corrections(texts, [t.get("id") for t in self.tickets], predictions)
+
+        processed = []
+        for i, (ticket, prediction) in enumerate(zip(self.tickets, predictions)):
+            p = self.process_ticket(ticket, prediction)
+            if i in matches:
+                p["routed_by_correction"] = matches[i]
+            processed.append(p)
+        return processed
+
+    def _follow_similar_corrections(self, texts: list[str], ids: list, predictions: list) -> dict[int, dict]:
+        """
+        Vé có độ tự tin thấp đi theo chỉnh sửa của nhân viên cho vé rất giống nó (Vector DB),
+        để một chỉnh sửa có hiệu lực ngay cho các vé tương tự, không cần chờ train lại.
+        Sửa predictions tại chỗ; trả về {index: thông tin vé chỉnh sửa khớp}.
+        """
+        from modules.feedback_manager import FeedbackManager
+
+        low = [i for i, p in enumerate(predictions) if p[1] < CONFIDENCE_THRESHOLD]
+        corrections = FeedbackManager(self.classifier.corrections_path).latest_by_ticket().values()
+        if not low or not any(c.get("email_content") for c in corrections):
+            return {}  # không cần nạp mô hình embedding
+
+        try:
+            from modules.vector_store import find_similar
+            hits = find_similar([texts[i] for i in low], n=1, where={"source": "human_correction"},
+                                exclude_ids=[ids[i] for i in low])
+        except Exception as e:
+            print(f"⚠️ Không tra được chỉnh sửa tương tự trong Vector DB: {e}")
+            return {}
+
+        matches = {}
+        for i, h in zip(low, hits):
+            if h and h[0]["similarity"] >= CORRECTION_MATCH_SIMILARITY:
+                best = h[0]
+                predictions[i] = (best["category"], best["similarity"], predictions[i][2])
+                matches[i] = {"ticket_id": best["id"].removeprefix("correction_"), "similarity": best["similarity"]}
+        return matches
 
     @staticmethod
     def _keyword_matches(text: str, keyword: str) -> bool:
         """Check if keyword appears in text (supports multi-word phrases)."""
         return bool(re.search(rf"\b{re.escape(keyword)}\b", text))
 
+_training_lock = threading.Lock()
+
+
+def is_training() -> bool:
+    return _training_lock.locked()
+
+
 def train_new_model_background(file_path: str):
-    """Chạy background để train mô hình mới không gây treo UI"""
+    """Chạy background để train mô hình mới không gây treo UI. Chỉ 1 lần train tại một thời điểm."""
+    if not _training_lock.acquire(blocking=False):
+        print("⚠️ Một lần train khác đang chạy, bỏ qua yêu cầu này.")
+        return
     try:
         print(f"🚀 Background Training started for data: {file_path}")
-        classifier = MLClassifier(training_data_path=file_path, force_retrain=True)
+        MLClassifier(training_data_path=file_path, force_retrain=True)
         print("✅ Background Training completed successfully!")
     except Exception as e:
         print(f"❌ Background Training failed: {e}")
+    finally:
+        _training_lock.release()

@@ -10,11 +10,20 @@ build/
 develop-eggs/
 dist/
 
-# Trained models and local data
-/data/logreg_model.joblib
-/data/tfidf_vectorizer.joblib
+# Trained models and local data (retrain from the Admin Dashboard)
+/data/*.joblib
+/models/
+/data/archive/
+/data/uploaded_train_*
+/data/sent_replies.json
+
+# Vector DB (rebuilt automatically from data/tickets.csv; or run build_vectordb.py)
+/chroma_db/
 
 # Streamlit
 .streamlit/
 # Raw Bitext download (rebuild tickets.csv with convert_bitext.py)
 /data/bitext/
+
+# macOS
+.DS_Store
