@@ -4,7 +4,7 @@ import threading
 import json
 # Import plotly để vẽ biểu đồ
 import plotly.express as px 
-from modules.processor import TicketProcessor
+from modules.processor import TicketProcessor, CONFIDENCE_THRESHOLD
 from modules.processor import train_new_model_background
 from modules.feedback_manager import FeedbackManager
 
@@ -146,8 +146,8 @@ def render_ticket_management():
                 # Warning if AI is not confident
                 if ticket.get('human_reviewed'):
                     st.success(f"Human reviewed: routed to {ticket['category']}.")
-                elif confidence < 0.65:
-                    st.error("Human Review Required: AI Confidence Score is below threshold (65%).")
+                elif confidence < CONFIDENCE_THRESHOLD:
+                    st.error(f"Human Review Required: AI Confidence Score is below threshold ({CONFIDENCE_THRESHOLD:.0%}).")
         
                 col1, col2 = st.columns(2)
                 with col1:

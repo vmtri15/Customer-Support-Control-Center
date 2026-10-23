@@ -24,6 +24,16 @@ except ImportError:
 
 _tokenize_lock = threading.Lock()
 
+
+def llm_label(text: str, categories: list[str]) -> str | None:
+    """Xin nhãn từ LLM; trả về None nếu câu trả lời không chứa đúng 1 danh mục hợp lệ."""
+    from modules.llm_client import chat_completion
+    prompt = f"Phân loại nội dung sau vào đúng MỘT trong {len(categories)} danh mục: {', '.join(categories)}.\nNội dung: '{text}'\n\nYÊU CẦU: CHỈ xuất ra ĐÚNG 1 TỪ/CỤM TỪ là tên danh mục, TUYỆT ĐỐI KHÔNG giải thích gì thêm."
+    answer = chat_completion(prompt, temperature=0.1).lower()
+    # Chấp nhận "Billing." hay "Category: Billing", từ chối câu trả lời mơ hồ
+    matches = [c for c in categories if c.lower() in answer]
+    return matches[0] if len(matches) == 1 else None
+
 class MLClassifier:
     """A ML model using TF-IDF and Support Vector Machine (SVM) with Active Learning."""
     def __init__(self, training_data_path: str = "data/tickets.csv", force_retrain: bool = False):
@@ -245,9 +255,8 @@ class MLClassifier:
                 
                 if len(df_unlabeled) > 0:
                     print(f"🔍 Bước 2: SVM dự đoán cho {len(df_unlabeled)} mẫu chưa có nhãn...")
-                    from modules.llm_client import chat_completion
-                    categories = ["Logistics", "Billing", "Technical", "Sales", "General Inquiry", "Account Management"]
-                    
+                    categories = sorted(df_labeled['category'].unique())
+
                     X_unlabeled = self.vectorizer.transform(df_unlabeled['processed_content'])
                     probs = initial_model.predict_proba(X_unlabeled)
                     preds = initial_model.predict(X_unlabeled)
@@ -263,12 +272,15 @@ class MLClassifier:
                         else:
                             if llm_calls < max_llm_calls:
                                 print(f"    ⏳ Xin nhãn từ LLM cho vé {df_full.at[idx, 'id']} (Độ tự tin: {confidence:.2f})...")
-                                prompt = f"Phân loại nội dung sau vào đúng MỘT trong 5 danh mục: {', '.join(categories)}.\nNội dung: '{df_full.at[idx, 'email_content']}'\n\nYÊU CẦU: CHỈ xuất ra ĐÚNG 1 TỪ/CỤM TỪ là tên danh mục, TUYỆT ĐỐI KHÔNG giải thích gì thêm."
                                 try:
-                                    label = chat_completion(prompt, temperature=0.1).strip()
-                                    df_full.at[idx, 'category'] = label
-                                    print(f"      -> LLM chọn: {label}")
+                                    label = llm_label(df_full.at[idx, 'email_content'], categories)
                                     llm_calls += 1
+                                    if label is None:
+                                        print(f"      -> LLM trả lời không hợp lệ, dùng SVM: {preds[i]}")
+                                        label = preds[i]
+                                    else:
+                                        print(f"      -> LLM chọn: {label}")
+                                    df_full.at[idx, 'category'] = label
                                 except Exception as e:
                                     print(f"      -> Lỗi gọi LLM: {e}")
                                     df_full.at[idx, 'category'] = preds[i] # Fallback to SVM
@@ -334,8 +346,7 @@ class MLClassifier:
             
         # Bước 1: Tiền xử lý (Preprocessing) trước khi dự đoán
         processed_text = self._preprocess_text(text)
-        print(f"Debug - Original: {text}\nDebug - Processed: {processed_text}")
-        
+
         if not processed_text:
             return "General Inquiry", 0.0, {}
             
@@ -349,9 +360,6 @@ class MLClassifier:
         
         # 3. Identify the predicted category
         prediction = self.model.predict(X_new)[0]
-
-        # Bước 3: In ra kết quả dự đoán và xác suất lớn nhất
-        print(f"Debug - Pred: {prediction}, Proba: {confidence}")
 
         # 4. Map probabilities to category names
         prob_dict = {str(self.model.classes_[i]): float(probs[i]) for i in range(len(probs))}
@@ -473,7 +481,7 @@ class TicketProcessor:
 
     def classify_category(self, text: str) -> tuple[str, float, dict]:
         """
-        ML-based Classification: One-layer Neural Network (Logistic Regression) with TF-IDF.
+        ML-based Classification: calibrated linear SVM with TF-IDF.
         """
         return self.classifier.predict(text)
 
