@@ -1,101 +1,601 @@
-"id","customer_name","email_content","tier","intent","confidence_score","timestamp","status","category"
-"T001","Diana Evans","Please delete my account data.","Gold","Retention",0.91,"2026-06-16 11:18","In Progress","Account Management"
-"T002","Hannah Lewis","I am very frustrated. My package arrived damaged. Thanks.","Platinum","Refund",0.77,"2026-06-10 08:50","In Progress","Billing"
-"T003","George Hall","I want to upgrade my subscription to the premium plan.","Platinum","Account Management",0.65,"2026-06-15 09:09","In Progress","Account Management"
-"T004","Bob Johnson","How do I close my subscription? Thanks.","Bronze","Retention",0.99,"2026-06-04 15:24","In Progress","Account Management"
-"T005","Michael Scott","Is it possible to merge two separate orders to save shipping? Thanks.","Gold","Logistics",0.72,"2026-06-06 10:01","In Progress","Logistics"
-"T006","Alice Smith","Checkout button is greyed out. Thanks.","Silver","Technical",0.8,"2026-06-14 14:24","Open","Technical"
-"T007","Laura King","App freezes on the payment screen.","Bronze","Technical",0.97,"2026-06-12 15:56","Open","Technical"
-"T008","Nina Dobrev","Can you give me an update on my delivery? Thanks.","Silver","WISMO",0.93,"2026-06-14 09:27","Open","Logistics"
-"T009","Oscar Isaac","How do I close my subscription?","Silver","Retention",0.81,"2026-06-09 09:48","In Progress","Account Management"
-"T010","Fiona Clark","My items arrived in a box that was completely crushed.","Silver","Complaint",0.76,"2026-06-04 17:48","Open","Logistics"
-"T011","Michael Scott","Can you help me understand the pricing structure for the annual subscription? Thanks.","Bronze","Pricing",0.96,"2026-06-07 13:33","Open","General Inquiry"
-"T012","Hannah Lewis","Can you give me an update on my delivery?","Silver","WISMO",0.76,"2026-06-06 10:09","Open","Logistics"
-"T013","Alice Smith","When will my package arrive?","Bronze","WISMO",0.69,"2026-06-07 14:48","Open","Logistics"
-"T014","Hannah Lewis","My items arrived in a box that was completely crushed.","Silver","Complaint",0.98,"2026-06-10 10:33","Resolved","Logistics"
-"T015","Nina Dobrev","The item is broken, please process a refund.","Silver","Refund",0.86,"2026-06-04 13:06","Open","Billing"
-"T016","Julia Walker","Can you verify my payment status? It hasn't been updated yet. Thanks.","Bronze","Billing",0.88,"2026-06-01 10:04","Open","Billing"
-"T017","Fiona Clark","How do I return a shirt that doesn't fit? Thanks.","Silver","Refund",0.78,"2026-06-16 08:33","Open","Billing"
-"T018","Alice Smith","Please delete my account data. Thanks.","Silver","Retention",0.92,"2026-06-09 10:21","Resolved","Account Management"
-"T019","Ian Young","How do I return a shirt that doesn't fit?","Platinum","Refund",0.7,"2026-06-11 15:35","Open","Billing"
-"T020","George Hall","My promo code is not working at checkout, please help. Thanks.","Gold","Billing",0.61,"2026-06-12 08:23","In Progress","Billing"
-"T021","Michael Scott","I want to downgrade my plan. Thanks.","Platinum","Retention",0.63,"2026-06-07 10:34","Open","Account Management"
-"T022","Alice Smith","I want to cancel my account immediately. Thanks.","Silver","Retention",0.62,"2026-06-14 09:33","Open","Account Management"
-"T023","Diana Evans","Can you verify my payment status? It hasn't been updated yet. Thanks.","Gold","Billing",0.84,"2026-06-08 14:46","Open","Billing"
-"T024","Ian Young","How do I change my billing address? Thanks.","Bronze","Account Management",0.87,"2026-06-07 12:51","Open","Account Management"
-"T025","Ian Young","Are there any hidden fees? Thanks.","Gold","Pricing",0.97,"2026-06-11 11:18","Open","General Inquiry"
-"T026","Michael Scott","Checkout button is greyed out.","Gold","Technical",0.56,"2026-06-01 15:41","Resolved","Technical"
-"T027","Ian Young","Are there any hidden fees?","Gold","Pricing",0.79,"2026-06-07 18:28","Open","General Inquiry"
-"T028","Ethan Wilson","I received a billing statement for an invoice I already paid. Thanks.","Gold","Billing",0.66,"2026-06-02 16:57","Resolved","Billing"
-"T029","Ethan Wilson","I'm looking for a specific size in your new collection.","Platinum","General Inquiry",0.92,"2026-06-08 11:12","In Progress","General Inquiry"
-"T030","George Hall","I'm extremely disappointed with the delivery service.","Platinum","Complaint",0.69,"2026-06-01 11:00","Open","Logistics"
-"T031","Ian Young","When will my package arrive?","Gold","WISMO",0.9,"2026-06-16 11:46","In Progress","Logistics"
-"T032","Ethan Wilson","The item is broken, please process a refund. Thanks.","Bronze","Refund",0.7,"2026-06-02 16:27","In Progress","Billing"
-"T033","George Hall","How do I close my subscription?","Gold","Retention",0.74,"2026-06-01 08:36","In Progress","Account Management"
-"T034","Hannah Lewis","My promo code is not working at checkout, please help. Thanks.","Platinum","Billing",0.8,"2026-06-09 16:13","In Progress","Billing"
-"T035","Diana Evans","Can you verify my payment status? It hasn't been updated yet. Thanks.","Silver","Billing",0.69,"2026-06-13 15:21","Resolved","Billing"
-"T036","Bob Johnson","Where are your products manufactured?","Silver","General Inquiry",0.83,"2026-06-10 11:01","In Progress","General Inquiry"
-"T037","Laura King","I'm looking for a specific size in your new collection.","Bronze","General Inquiry",0.74,"2026-06-05 17:47","In Progress","General Inquiry"
-"T038","Bob Johnson","The delivery guy was very rude to me. I want to report this behavior. Thanks.","Bronze","Complaint",0.57,"2026-06-05 11:02","Open","Logistics"
-"T039","Diana Evans","Can I add a family member to my account? Thanks.","Bronze","Account Management",0.72,"2026-06-07 10:25","In Progress","Account Management"
-"T040","Diana Evans","My items arrived in a box that was completely crushed.","Silver","Complaint",0.97,"2026-06-03 14:43","In Progress","Logistics"
-"T041","Diana Evans","Can you give me an update on my delivery? Thanks.","Gold","WISMO",0.56,"2026-06-13 11:16","Open","Logistics"
-"T042","Kevin White","My items arrived in a box that was completely crushed.","Silver","Complaint",0.7,"2026-06-08 16:56","Open","Logistics"
-"T043","Bob Johnson","Please delete my account data.","Platinum","Retention",0.82,"2026-06-14 17:25","In Progress","Account Management"
-"T044","Bob Johnson","I want to downgrade my plan.","Gold","Retention",0.94,"2026-06-11 09:29","Resolved","Account Management"
-"T045","Fiona Clark","How do I change my billing address?","Platinum","Account Management",0.78,"2026-06-15 14:24","Open","Account Management"
-"T046","Laura King","Can you change the delivery address for my current order? Thanks.","Silver","Logistics",0.82,"2026-06-05 11:53","Resolved","Logistics"
-"T047","Julia Walker","Can you give me an update on my delivery?","Bronze","WISMO",0.72,"2026-06-12 16:07","In Progress","Logistics"
-"T048","Julia Walker","I was double charged for my monthly subscription. Please fix this.","Platinum","Billing",0.86,"2026-06-10 12:34","Resolved","Billing"
-"T049","Julia Walker","Is it possible to merge two separate orders to save shipping? Thanks.","Silver","Logistics",0.91,"2026-06-13 15:05","Resolved","Logistics"
-"T050","Michael Scott","Can you give me an update on my delivery?","Silver","WISMO",0.95,"2026-06-15 15:08","In Progress","Logistics"
-"T051","Laura King","Customer service response has been very slow. Please look into this. Thanks.","Bronze","Complaint",0.91,"2026-06-04 12:56","Open","Logistics"
-"T052","Alice Smith","Tracking says delivered but I haven't received anything.","Silver","WISMO",0.68,"2026-06-02 14:25","Resolved","Logistics"
-"T053","Charlie Davis","The website is so slow today, I can't add items to my cart. Thanks.","Platinum","Technical",0.61,"2026-06-01 14:59","Resolved","Technical"
-"T054","Bob Johnson","I want to upgrade my subscription to the premium plan.","Gold","Account Management",0.96,"2026-06-14 13:19","Resolved","Account Management"
-"T055","Julia Walker","Is it possible to merge two separate orders to save shipping? Thanks.","Platinum","Logistics",0.74,"2026-06-10 15:18","Open","Logistics"
-"T056","Michael Scott","I want to upgrade my subscription to the premium plan. Thanks.","Bronze","Account Management",0.8,"2026-06-02 15:13","In Progress","Account Management"
-"T057","Oscar Isaac","Where is my order? It has been 10 days since I placed it. Thanks.","Silver","WISMO",0.81,"2026-06-13 16:28","In Progress","Logistics"
-"T058","Hannah Lewis","The app keeps crashing whenever I try to checkout. Thanks.","Bronze","Technical",0.83,"2026-06-04 17:04","Resolved","Technical"
-"T059","Laura King","Where are your products manufactured? Thanks.","Gold","General Inquiry",0.95,"2026-06-10 18:13","Open","General Inquiry"
-"T060","Julia Walker","The item is broken, please process a refund. Thanks.","Gold","Refund",0.58,"2026-06-08 15:06","Open","Billing"
-"T061","Diana Evans","Where is my order? It has been 10 days since I placed it.","Bronze","WISMO",0.56,"2026-06-13 15:58","In Progress","Logistics"
-"T062","Ian Young","App freezes on the payment screen.","Bronze","Technical",0.79,"2026-06-08 15:14","Resolved","Technical"
-"T063","Laura King","How do I change my billing address?","Silver","Account Management",0.57,"2026-06-07 12:18","Resolved","Account Management"
-"T064","Fiona Clark","My promo code is not working at checkout, please help. Thanks.","Platinum","Billing",0.62,"2026-06-01 12:49","Resolved","Billing"
-"T065","Ethan Wilson","Where are your products manufactured?","Bronze","General Inquiry",0.55,"2026-06-02 12:57","Resolved","General Inquiry"
-"T066","Michael Scott","Can you change the delivery address for my current order?","Silver","Logistics",0.99,"2026-06-03 18:07","Resolved","Logistics"
-"T067","Alice Smith","My items arrived in a box that was completely crushed.","Bronze","Complaint",0.58,"2026-06-15 09:48","In Progress","Logistics"
-"T068","Bob Johnson","The item received is not the one I ordered. It's a completely different color. Thanks.","Silver","Logistics",0.87,"2026-06-10 15:16","Resolved","Logistics"
-"T069","Oscar Isaac","I'm extremely disappointed with the delivery service. Thanks.","Platinum","Complaint",0.57,"2026-06-13 17:41","Open","Logistics"
-"T070","Alice Smith","Do you offer student discounts? Thanks.","Bronze","Pricing",0.76,"2026-06-04 10:43","Open","General Inquiry"
-"T071","Julia Walker","The delivery guy was very rude to me. I want to report this behavior. Thanks.","Bronze","Complaint",0.77,"2026-06-03 14:44","Open","Logistics"
-"T072","Julia Walker","Where is my order? It has been 10 days since I placed it.","Platinum","WISMO",0.63,"2026-06-13 08:28","In Progress","Logistics"
-"T073","Charlie Davis","Do you ship internationally? Thanks.","Bronze","General Inquiry",0.77,"2026-06-06 15:35","Open","General Inquiry"
-"T074","Nina Dobrev","Are there any loyalty programs for frequent buyers like me? Thanks.","Gold","General Inquiry",0.72,"2026-06-14 08:53","Open","General Inquiry"
-"T075","Fiona Clark","I'm looking for a specific size in your new collection. Thanks.","Gold","General Inquiry",0.6,"2026-06-08 09:04","Resolved","General Inquiry"
-"T076","Oscar Isaac","Is it possible to merge two separate orders to save shipping?","Bronze","Logistics",0.76,"2026-06-06 16:49","Resolved","Logistics"
-"T077","Laura King","Customer service response has been very slow. Please look into this. Thanks.","Bronze","Complaint",0.72,"2026-06-08 11:49","In Progress","Logistics"
-"T078","Bob Johnson","I want to upgrade my subscription to the premium plan.","Bronze","Account Management",0.85,"2026-06-10 14:12","In Progress","Account Management"
-"T079","Oscar Isaac","Are there any loyalty programs for frequent buyers like me? Thanks.","Bronze","General Inquiry",0.63,"2026-06-15 11:15","Resolved","General Inquiry"
-"T080","Fiona Clark","Please delete my account data. Thanks.","Platinum","Retention",0.67,"2026-06-16 09:35","In Progress","Account Management"
-"T081","Ian Young","How do I close my subscription?","Bronze","Retention",0.57,"2026-06-08 16:57","Open","Account Management"
-"T082","Laura King","I'm extremely disappointed with the delivery service.","Bronze","Complaint",0.8,"2026-06-07 08:13","Resolved","Logistics"
-"T083","Alice Smith","Can you change the delivery address for my current order?","Bronze","Logistics",0.9,"2026-06-09 13:40","Resolved","Logistics"
-"T084","Alice Smith","Do you offer student discounts? Thanks.","Platinum","Pricing",0.78,"2026-06-06 18:52","In Progress","General Inquiry"
-"T085","Diana Evans","When will my package arrive?","Platinum","WISMO",0.62,"2026-06-11 16:20","In Progress","Logistics"
-"T086","Bob Johnson","Why is the shipping fee so high this time? Thanks.","Silver","Pricing",0.82,"2026-06-03 18:03","Open","General Inquiry"
-"T087","Julia Walker","I want to upgrade my subscription to the premium plan.","Silver","Account Management",0.98,"2026-06-14 09:38","In Progress","Account Management"
-"T088","Laura King","Tracking says delivered but I haven't received anything. Thanks.","Silver","WISMO",0.61,"2026-06-16 18:47","Resolved","Logistics"
-"T089","Ethan Wilson","I forgot my password and the reset link is not sending to my email.","Silver","Technical",0.55,"2026-06-09 17:12","Resolved","Technical"
-"T090","Bob Johnson","Can you give me an update on my delivery? Thanks.","Bronze","WISMO",0.63,"2026-06-12 17:05","In Progress","Logistics"
-"T091","Bob Johnson","Are there any hidden fees? Thanks.","Platinum","Pricing",0.92,"2026-06-15 15:11","In Progress","General Inquiry"
-"T092","Alice Smith","I was double charged for my monthly subscription. Please fix this.","Bronze","Billing",0.96,"2026-06-11 11:35","Resolved","Billing"
-"T093","Michael Scott","Tracking says delivered but I haven't received anything. Thanks.","Bronze","WISMO",0.77,"2026-06-07 12:19","Resolved","Logistics"
-"T094","Laura King","Is it possible to merge two separate orders to save shipping?","Bronze","Logistics",0.8,"2026-06-08 11:37","Open","Logistics"
-"T095","Alice Smith","Do you ship internationally?","Bronze","General Inquiry",0.6,"2026-06-04 09:24","Resolved","General Inquiry"
-"T096","Michael Scott","The website is so slow today, I can't add items to my cart. Thanks.","Gold","Technical",0.93,"2026-06-10 13:50","In Progress","Technical"
-"T097","Hannah Lewis","Can you give me an update on my delivery?","Platinum","WISMO",0.7,"2026-06-11 16:45","Resolved","Logistics"
-"T098","Hannah Lewis","Can I add a family member to my account? Thanks.","Gold","Account Management",0.92,"2026-06-16 13:42","Resolved","Account Management"
-"T099","Ethan Wilson","My items arrived in a box that was completely crushed. Thanks.","Silver","Complaint",0.6,"2026-06-09 17:55","Open","Logistics"
-"T100","Bob Johnson","How do I return a shirt that doesn't fit?","Platinum","Refund",0.74,"2026-06-05 15:13","Open","Billing"
+id,customer_name,email_content,tier,intent,confidence_score,timestamp,status,category
+T2500,Beatriz Santos,I paid for premium but I'm still seeing ads. Please help.,Silver,billing,,2026-05-20 14:53:08,Pending,Billing
+T2501,Martina Costa,"The website is loading incredibly slowly today, is the server down?",Gold,technical,,2026-06-11 14:53:08,Open,Technical
+T2502,Evelyn Martinez,Tại sao mình không nhận được thông báo đẩy của app?,Silver,account management,,2026-06-13 14:53:08,Open,Account Management
+T2503,Alexander Rodriguez,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Silver,logistic,,2026-05-28 14:53:08,Pending,Logistics
+T2504,Evelyn Martinez,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Silver,returns,,2026-05-21 14:53:08,Open,Returns
+T2505,Nguyen Thi Bich,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-17 14:53:08,Open,Billing
+T2506,Tran Thi Mai,"Mình quên mất username rồi, khôi phục bằng cách nào?",Gold,account management,,2026-06-06 14:53:08,Open,Account Management
+T2507,Samuel Taylor,Is it possible to expedite my order #9661? I need it for a gift.,Gold,logistic,,2026-06-09 14:53:08,Pending,Logistics
+T2508,Sofia Silva,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Gold,general inquiry,,2026-06-14 14:53:08,Pending,General Inquiry
+T2509,Daniel Hernandez,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-06-09 14:53:08,Pending,Billing
+T2510,Nguyen Hoang Nam,My order #4701 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-06-07 14:53:08,Closed,Logistics
+T2511,Hoang Thi Yen,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-06-11 14:53:08,Open,Billing
+T2512,Hugo Dubois,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Bronze,billing,,2026-05-17 14:53:08,Closed,Billing
+T2513,Maximilian Weber,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Silver,billing,,2026-05-31 14:53:08,Open,Billing
+T2514,Mateo Garcia,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-06-14 14:53:08,Open,Logistics
+T2515,William Taylor,"The website is loading incredibly slowly today, is the server down?",Gold,technical,,2026-05-25 14:53:08,Closed,Technical
+T2516,Mateo Garcia,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Silver,returns,,2026-05-24 14:53:08,Open,Returns
+T2517,Do Xuan Bach,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Silver,logistic,,2026-06-03 14:53:08,Pending,Logistics
+T2518,Vu Thi Lan,Do you offer bulk discounts for enterprise clients?,Silver,sales,,2026-05-25 14:53:08,Closed,Sales
+T2519,Hoang Duc Anh,"I've been trying to reset my password for an hour, no email received.",Gold,account management,,2026-06-08 14:53:08,Open,Account Management
+T2520,Do Xuan Bach,My order #2856 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-06-11 14:53:08,Closed,Logistics
+T2521,Sven Johansson,"Đơn hàng #2094 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-06-07 14:53:08,Pending,Logistics
+T2522,Grace Thomas,I paid for premium but I'm still seeing ads. Please help.,Bronze,billing,,2026-05-20 14:53:08,Pending,Billing
+T2523,Bui Thu Ha,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-06-03 14:53:08,Closed,Returns
+T2524,Bui Thu Ha,"The package arrived damaged, I want a replacement.",Bronze,returns,,2026-05-28 14:53:08,Open,Returns
+T2525,Dang Thu Trang,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-06-06 14:53:08,Open,Logistics
+T2526,Daniel Hernandez,Mình cần thông tin liên hệ của bộ phận đối tác để hợp tác dài hạn.,Silver,general inquiry,,2026-06-15 14:53:08,Open,General Inquiry
+T2527,Alice Lefebvre,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-05-21 14:53:08,Pending,Account Management
+T2528,Erik Hansen,Can I exchange this for a different color?,Silver,returns,,2026-05-19 14:53:08,Closed,Returns
+T2529,Amelia Garcia,"I need to return this item, it doesn't fit my size.",Gold,returns,,2026-05-23 14:53:08,Closed,Returns
+T2530,Hoang Duc Anh,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Bronze,billing,,2026-05-24 14:53:08,Pending,Billing
+T2531,Nguyen Van An,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-05-27 14:53:08,Pending,Returns
+T2532,Le Thu Huong,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-06-05 14:53:08,Open,Returns
+T2533,Freja Nielsen,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-06-05 14:53:08,Pending,Billing
+T2534,Freja Nielsen,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-06-08 14:53:08,Pending,General Inquiry
+T2535,Le Thu Huong,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-06-02 14:53:08,Open,Logistics
+T2536,Emma Johnson,How do I update my credit card info in the system?,Gold,billing,,2026-06-06 14:53:08,Open,Billing
+T2537,James Anderson,What are the store hours for your physical locations?,Bronze,general inquiry,,2026-05-20 14:53:08,Closed,General Inquiry
+T2538,William Taylor,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-28 14:53:08,Closed,General Inquiry
+T2539,Amelia Garcia,"My account is showing the wrong name, how can I edit my profile?",Silver,account management,,2026-06-10 14:53:08,Open,Account Management
+T2540,Isabella Müller,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Silver,sales,,2026-06-04 14:53:08,Closed,Sales
+T2541,Vu Minh Khoi,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-05-23 14:53:08,Closed,Logistics
+T2542,Tran Minh Chau,The discount code did not apply to my final checkout price.,Bronze,billing,,2026-06-09 14:53:08,Open,Billing
+T2543,Joseph Anderson,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-05-18 14:53:08,Pending,Account Management
+T2544,Nguyen Thi Bich,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Gold,account management,,2026-05-24 14:53:08,Closed,Account Management
+T2545,Elena Rossi,I'm getting 'Unauthorized' error whenever I click on my orders.,Gold,technical,,2026-06-05 14:53:08,Pending,Technical
+T2546,Mateo Garcia,"The website is loading incredibly slowly today, is the server down?",Gold,technical,,2026-05-20 14:53:08,Open,Technical
+T2547,Daniel Hernandez,"Đơn hàng #5383 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-05-25 14:53:08,Pending,Logistics
+T2548,Maximilian Weber,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-22 14:53:08,Pending,Billing
+T2549,Clara Dubois,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-05-19 14:53:08,Open,Logistics
+T2550,Katarina Petrov,The discount code did not apply to my final checkout price.,Silver,billing,,2026-06-09 14:53:08,Pending,Billing
+T2551,Anna Novak,"The package arrived damaged, I want a replacement.",Gold,returns,,2026-05-21 14:53:08,Open,Returns
+T2552,William Taylor,"Đơn hàng #6860 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Bronze,logistic,,2026-06-13 14:53:08,Open,Logistics
+T2553,Matthew Gonzalez,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Gold,billing,,2026-06-10 14:53:08,Pending,Billing
+T2554,Sofia Silva,My order #2930 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-05-24 14:53:08,Pending,Logistics
+T2555,Katarina Petrov,Tại sao mình không nhận được thông báo đẩy của app?,Bronze,account management,,2026-05-22 14:53:08,Closed,Account Management
+T2556,Amelia Garcia,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Gold,billing,,2026-06-13 14:53:08,Closed,Billing
+T2557,Anna Novak,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-06-03 14:53:08,Open,Billing
+T2558,Sofia Silva,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-15 14:53:08,Open,Logistics
+T2559,Lucas Martinez,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Silver,general inquiry,,2026-05-29 14:53:08,Pending,General Inquiry
+T2560,Elena Rossi,The discount code did not apply to my final checkout price.,Gold,billing,,2026-05-31 14:53:08,Closed,Billing
+T2561,Sofia Silva,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-05-30 14:53:08,Pending,Returns
+T2562,Le Thu Huong,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Silver,logistic,,2026-05-29 14:53:08,Closed,Logistics
+T2563,Sophia Miller,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-05-17 14:53:08,Open,Logistics
+T2564,Tran Minh Chau,"The package arrived damaged, I want a replacement.",Bronze,returns,,2026-06-13 14:53:08,Open,Returns
+T2565,Vu Thi Lan,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Bronze,logistic,,2026-06-03 14:53:08,Closed,Logistics
+T2566,Emma Johnson,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Silver,billing,,2026-05-28 14:53:08,Closed,Billing
+T2567,Do Xuan Bach,Can I exchange this for a different color?,Silver,returns,,2026-05-28 14:53:08,Pending,Returns
+T2568,Joseph Anderson,Tại sao mình không nhận được thông báo đẩy của app?,Silver,account management,,2026-05-24 14:53:08,Open,Account Management
+T2569,Olivia Smith,"Đơn hàng #9523 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-06-09 14:53:08,Closed,Logistics
+T2570,Clara Dubois,"My account is showing the wrong name, how can I edit my profile?",Silver,account management,,2026-05-23 14:53:08,Open,Account Management
+T2571,Alessandro Conti,Can I exchange this for a different color?,Gold,returns,,2026-06-11 14:53:08,Open,Returns
+T2572,Tran Thi Mai,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Bronze,logistic,,2026-05-17 14:53:08,Open,Logistics
+T2573,Evelyn Martinez,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-31 14:53:08,Open,General Inquiry
+T2574,Hugo Dubois,"I've been trying to reset my password for an hour, no email received.",Bronze,account management,,2026-05-24 14:53:08,Pending,Account Management
+T2575,Vu Minh Khoi,"The package arrived damaged, I want a replacement.",Gold,returns,,2026-06-13 14:53:08,Closed,Returns
+T2576,Sophia Miller,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-05-20 14:53:08,Pending,Account Management
+T2577,Elizabeth Wilson,App keeps crashing on startup. Very frustrating.,Bronze,technical,,2026-05-30 14:53:08,Open,Technical
+T2578,Emma Johnson,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-06-08 14:53:08,Pending,Returns
+T2579,Jonas Lindberg,I paid for premium but I'm still seeing ads. Please help.,Bronze,billing,,2026-05-26 14:53:08,Pending,Billing
+T2580,Do Xuan Bach,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Bronze,logistic,,2026-05-31 14:53:08,Closed,Logistics
+T2581,Emma Johnson,My order #1036 is literally 5 days late. Where is my stuff?,Bronze,logistic,,2026-05-26 14:53:08,Pending,Logistics
+T2582,Sofia Silva,Tracking shows delivered but nothing at my door. Can you check this?,Silver,logistic,,2026-06-13 14:53:08,Open,Logistics
+T2583,Samuel Taylor,How do I update my credit card info in the system?,Gold,billing,,2026-05-29 14:53:08,Open,Billing
+T2584,Pham Thanh Thao,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Gold,general inquiry,,2026-05-23 14:53:08,Open,General Inquiry
+T2585,Hugo Dubois,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Silver,billing,,2026-06-03 14:53:08,Closed,Billing
+T2586,Olivia Smith,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Bronze,logistic,,2026-06-14 14:53:08,Closed,Logistics
+T2587,Beatriz Santos,Tracking shows delivered but nothing at my door. Can you check this?,Bronze,logistic,,2026-05-29 14:53:08,Pending,Logistics
+T2588,Jakub Kowalski,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Gold,billing,,2026-05-31 14:53:08,Open,Billing
+T2589,Olivia Smith,Tại sao đơn hàng #2190 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Bronze,billing,,2026-05-25 14:53:08,Pending,Billing
+T2590,Phan Quoc Bao,"I've been trying to reset my password for an hour, no email received.",Gold,account management,,2026-06-11 14:53:08,Open,Account Management
+T2591,Freja Nielsen,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-05-31 14:53:08,Open,Returns
+T2592,Hugo Dubois,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-05-19 14:53:08,Open,Billing
+T2593,Vo Minh Phuong,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-05-24 14:53:08,Closed,General Inquiry
+T2594,Nguyen Thi Bich,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-12 14:53:08,Open,Logistics
+T2595,Nguyen Van An,"Mình quên mất username rồi, khôi phục bằng cách nào?",Silver,account management,,2026-05-29 14:53:08,Closed,Account Management
+T2596,Jonas Lindberg,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Bronze,sales,,2026-06-12 14:53:08,Open,Sales
+T2597,Nguyen Van An,Can I exchange this for a different color?,Bronze,returns,,2026-05-30 14:53:08,Pending,Returns
+T2598,Oskar Berg,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-06-09 14:53:08,Closed,Billing
+T2599,Jakub Kowalski,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Silver,account management,,2026-06-11 14:53:08,Open,Account Management
+T2600,Erik Hansen,I'm interested in becoming a reseller of your products.,Bronze,sales,,2026-05-27 14:53:08,Pending,Sales
+T2601,Clara Dubois,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-06-06 14:53:08,Closed,Returns
+T2602,Emma Johnson,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-06-11 14:53:08,Open,Logistics
+T2603,Emma Johnson,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Silver,sales,,2026-06-08 14:53:08,Closed,Sales
+T2604,Alessandro Conti,I was overcharged on my last invoice. Please fix this.,Gold,billing,,2026-05-24 14:53:08,Pending,Billing
+T2605,Phan Quoc Bao,How do I update my credit card info in the system?,Gold,billing,,2026-05-20 14:53:08,Open,Billing
+T2606,Matthew Gonzalez,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-06 14:53:08,Closed,General Inquiry
+T2607,Evelyn Martinez,How do I update my credit card info in the system?,Silver,billing,,2026-05-27 14:53:08,Open,Billing
+T2608,Mateo Garcia,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Bronze,logistic,,2026-06-02 14:53:08,Pending,Logistics
+T2609,Sofia Silva,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-05-18 14:53:08,Closed,Logistics
+T2610,Phan Quoc Bao,How do I update my credit card info in the system?,Gold,billing,,2026-06-03 14:53:08,Pending,Billing
+T2611,Phan Quoc Bao,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-06-09 14:53:08,Pending,Returns
+T2612,Harper Lopez,My order #2902 is literally 5 days late. Where is my stuff?,Silver,logistic,,2026-05-31 14:53:08,Pending,Logistics
+T2613,Evelyn Martinez,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-06-06 14:53:08,Pending,Account Management
+T2614,Vo Minh Phuong,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Gold,logistic,,2026-06-13 14:53:08,Pending,Logistics
+T2615,Alessandro Conti,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Gold,logistic,,2026-06-08 14:53:08,Closed,Logistics
+T2616,Pham Thanh Thao,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-28 14:53:08,Pending,General Inquiry
+T2617,Erik Hansen,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Bronze,billing,,2026-06-11 14:53:08,Pending,Billing
+T2618,Bui Van Long,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-05-17 14:53:08,Pending,Account Management
+T2619,Bui Thu Ha,Do you offer bulk discounts for enterprise clients?,Bronze,sales,,2026-05-27 14:53:08,Pending,Sales
+T2620,Pham Duc Minh,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Silver,logistic,,2026-06-13 14:53:08,Closed,Logistics
+T2621,Sofia Silva,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-05-24 14:53:08,Open,Returns
+T2622,Harper Lopez,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Gold,technical,,2026-05-24 14:53:08,Closed,Technical
+T2623,Charlotte Davis,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-04 14:53:08,Closed,General Inquiry
+T2624,Samuel Taylor,I paid for premium but I'm still seeing ads. Please help.,Gold,billing,,2026-05-21 14:53:08,Closed,Billing
+T2625,Matthew Gonzalez,The discount code did not apply to my final checkout price.,Silver,billing,,2026-06-13 14:53:08,Pending,Billing
+T2626,Olivia Smith,"The package arrived damaged, I want a replacement.",Bronze,returns,,2026-06-14 14:53:08,Open,Returns
+T2627,Elena Rossi,Are you guys open to collaborations?,Bronze,general inquiry,,2026-05-22 14:53:08,Closed,General Inquiry
+T2628,Hugo Dubois,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-25 14:53:08,Closed,Billing
+T2629,Erik Hansen,The discount code did not apply to my final checkout price.,Bronze,billing,,2026-06-07 14:53:08,Pending,Billing
+T2630,Benjamin Brown,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-14 14:53:08,Open,Logistics
+T2631,Hugo Dubois,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Bronze,account management,,2026-06-15 14:53:08,Closed,Account Management
+T2632,Emma Johnson,Can I exchange this for a different color?,Bronze,returns,,2026-06-11 14:53:08,Open,Returns
+T2633,Lucas Martinez,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-05-21 14:53:08,Closed,Logistics
+T2634,Bui Thu Ha,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Silver,sales,,2026-06-12 14:53:08,Pending,Sales
+T2635,Katarina Petrov,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-05-25 14:53:08,Closed,Account Management
+T2636,Clara Dubois,My order #3929 is literally 5 days late. Where is my stuff?,Bronze,logistic,,2026-06-07 14:53:08,Pending,Logistics
+T2637,Samuel Taylor,I'm interested in becoming a reseller of your products.,Bronze,sales,,2026-06-07 14:53:08,Pending,Sales
+T2638,Olivia Smith,Is it possible to expedite my order #1869? I need it for a gift.,Gold,logistic,,2026-05-26 14:53:08,Closed,Logistics
+T2639,Bui Thu Ha,"Website báo lỗi 500, không truy cập được.",Gold,technical,,2026-05-23 14:53:08,Pending,Technical
+T2640,Henry Wilson,"I've been trying to reset my password for an hour, no email received.",Bronze,account management,,2026-06-11 14:53:08,Pending,Account Management
+T2641,Tran Thi Mai,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-05-18 14:53:08,Open,Billing
+T2642,Dang Minh Tri,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Bronze,billing,,2026-06-07 14:53:08,Closed,Billing
+T2643,Tran Thi Mai,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-05-21 14:53:08,Open,Returns
+T2644,Bui Van Long,I'm interested in becoming a reseller of your products.,Gold,sales,,2026-06-01 14:53:08,Open,Sales
+T2645,Nguyen Thi Bich,App keeps crashing on startup. Very frustrating.,Gold,technical,,2026-05-31 14:53:08,Pending,Technical
+T2646,Vu Thi Lan,What are the store hours for your physical locations?,Bronze,general inquiry,,2026-06-13 14:53:08,Pending,General Inquiry
+T2647,Harper Lopez,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-06-12 14:53:08,Pending,General Inquiry
+T2648,Hoang Thi Yen,How do I update my credit card info in the system?,Bronze,billing,,2026-06-03 14:53:08,Closed,Billing
+T2649,Bui Van Long,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-15 14:53:08,Closed,General Inquiry
+T2650,Le Minh Tuan,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-05-29 14:53:08,Pending,Billing
+T2651,Jonas Lindberg,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-21 14:53:08,Open,Billing
+T2652,Emma Johnson,Do you offer bulk discounts for enterprise clients?,Bronze,sales,,2026-05-17 14:53:08,Pending,Sales
+T2653,Freja Nielsen,I'm getting 'Unauthorized' error whenever I click on my orders.,Bronze,technical,,2026-05-30 14:53:08,Open,Technical
+T2654,Lukas Schmidt,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-05-31 14:53:08,Open,Billing
+T2655,Do Xuan Bach,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-06 14:53:08,Pending,General Inquiry
+T2656,Joseph Anderson,"Website báo lỗi 500, không truy cập được.",Bronze,technical,,2026-05-27 14:53:08,Pending,Technical
+T2657,Lukas Schmidt,Why is my package moving between hubs for 3 days now?,Bronze,logistic,,2026-06-13 14:53:08,Closed,Logistics
+T2658,Mateo Garcia,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-06-06 14:53:08,Pending,Logistics
+T2659,Hugo Dubois,Do you offer bulk discounts for enterprise clients?,Bronze,sales,,2026-06-10 14:53:08,Pending,Sales
+T2660,Emma Johnson,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-17 14:53:08,Pending,Billing
+T2661,Do Xuan Bach,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-23 14:53:08,Open,Billing
+T2662,Sven Johansson,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Gold,returns,,2026-06-04 14:53:08,Closed,Returns
+T2663,Phan Quoc Bao,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-05-21 14:53:08,Closed,Logistics
+T2664,William Taylor,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Bronze,billing,,2026-05-21 14:53:08,Closed,Billing
+T2665,Alessandro Conti,The discount code did not apply to my final checkout price.,Bronze,billing,,2026-05-26 14:53:08,Closed,Billing
+T2666,Evelyn Martinez,How do I update my credit card info in the system?,Silver,billing,,2026-05-29 14:53:08,Pending,Billing
+T2667,Do Xuan Bach,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Bronze,sales,,2026-06-11 14:53:08,Closed,Sales
+T2668,Grace Thomas,"I've been trying to reset my password for an hour, no email received.",Gold,account management,,2026-05-29 14:53:08,Pending,Account Management
+T2669,Hoang Thi Yen,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-01 14:53:08,Open,Logistics
+T2670,Clara Dubois,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Silver,general inquiry,,2026-05-30 14:53:08,Closed,General Inquiry
+T2671,Nguyen Van An,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-05-22 14:53:08,Closed,General Inquiry
+T2672,Olivia Smith,"Đơn hàng #8296 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Bronze,logistic,,2026-06-07 14:53:08,Open,Logistics
+T2673,Hoang Thi Yen,My order #9630 is literally 5 days late. Where is my stuff?,Bronze,logistic,,2026-05-22 14:53:08,Pending,Logistics
+T2674,Lucas Martinez,Do you offer bulk discounts for enterprise clients?,Silver,sales,,2026-06-06 14:53:08,Open,Sales
+T2675,Tran Thi Mai,I'm getting 'Unauthorized' error whenever I click on my orders.,Gold,technical,,2026-06-10 14:53:08,Open,Technical
+T2676,Alessandro Conti,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-05-22 14:53:08,Closed,Logistics
+T2677,Charlotte Davis,Tại sao mình không nhận được thông báo đẩy của app?,Bronze,account management,,2026-05-29 14:53:08,Open,Account Management
+T2678,Alexander Rodriguez,I'm getting 'Unauthorized' error whenever I click on my orders.,Silver,technical,,2026-05-19 14:53:08,Closed,Technical
+T2679,Matthew Gonzalez,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-06-01 14:53:08,Pending,Billing
+T2680,Harper Lopez,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Silver,technical,,2026-06-06 14:53:08,Pending,Technical
+T2681,Bui Van Long,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Bronze,returns,,2026-06-02 14:53:08,Closed,Returns
+T2682,Sofia Silva,"Website báo lỗi 500, không truy cập được.",Gold,technical,,2026-06-06 14:53:08,Closed,Technical
+T2683,Hoang Duc Anh,Tại sao mình không nhận được thông báo đẩy của app?,Bronze,account management,,2026-05-30 14:53:08,Pending,Account Management
+T2684,Le Thu Huong,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-05-25 14:53:08,Pending,Returns
+T2685,Jonas Lindberg,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-09 14:53:08,Closed,Logistics
+T2686,Le Minh Tuan,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Gold,sales,,2026-05-31 14:53:08,Pending,Sales
+T2687,Jakub Kowalski,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-05-21 14:53:08,Closed,General Inquiry
+T2688,Vu Minh Khoi,"I've been trying to reset my password for an hour, no email received.",Silver,account management,,2026-06-07 14:53:08,Pending,Account Management
+T2689,Beatriz Santos,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-05-21 14:53:08,Open,Logistics
+T2690,Elizabeth Wilson,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-06-15 14:53:08,Open,General Inquiry
+T2691,Bui Van Long,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-06-13 14:53:08,Open,Returns
+T2692,Maximilian Weber,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-06-03 14:53:08,Closed,Billing
+T2693,Maximilian Weber,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-05-20 14:53:08,Pending,Account Management
+T2694,Emma Johnson,Can I exchange this for a different color?,Bronze,returns,,2026-05-19 14:53:08,Pending,Returns
+T2695,Samuel Taylor,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Gold,returns,,2026-06-01 14:53:08,Pending,Returns
+T2696,Nguyen Van An,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-05-23 14:53:08,Pending,Logistics
+T2697,Benjamin Brown,"I've been trying to reset my password for an hour, no email received.",Gold,account management,,2026-06-14 14:53:08,Pending,Account Management
+T2698,Maximilian Weber,What are the store hours for your physical locations?,Bronze,general inquiry,,2026-05-27 14:53:08,Open,General Inquiry
+T2699,Grace Thomas,My order #3301 is literally 5 days late. Where is my stuff?,Silver,logistic,,2026-05-28 14:53:08,Closed,Logistics
+T2700,Emma Johnson,Tracking shows delivered but nothing at my door. Can you check this?,Bronze,logistic,,2026-05-22 14:53:08,Open,
+T2701,Lucas Martinez,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Silver,general inquiry,,2026-05-23 14:53:08,Open,
+T2702,Martina Costa,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Bronze,logistic,,2026-05-25 14:53:08,Pending,
+T2703,Le Thu Huong,Tại sao mình không nhận được thông báo đẩy của app?,Gold,account management,,2026-06-01 14:53:08,Open,
+T2704,Emma Johnson,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-05-30 14:53:08,Closed,
+T2705,Sven Johansson,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Silver,general inquiry,,2026-06-09 14:53:08,Closed,
+T2706,Elena Rossi,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-15 14:53:08,Open,
+T2707,Pham Thanh Thao,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-06-13 14:53:08,Closed,
+T2708,Bui Thu Ha,"Website báo lỗi 500, không truy cập được.",Gold,technical,,2026-06-04 14:53:08,Pending,
+T2709,Charlotte Davis,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-05-17 14:53:08,Open,
+T2710,Isabella Müller,"The website is loading incredibly slowly today, is the server down?",Bronze,technical,,2026-05-27 14:53:08,Closed,
+T2711,Bui Van Long,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-06-13 14:53:08,Closed,
+T2712,Maximilian Weber,"My account is showing the wrong name, how can I edit my profile?",Gold,account management,,2026-06-02 14:53:08,Open,
+T2713,Amelia Garcia,My order #7180 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-05-23 14:53:08,Pending,
+T2714,Alessandro Conti,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-06-15 14:53:08,Closed,
+T2715,Hoang Duc Anh,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-05-21 14:53:08,Open,
+T2716,Alessandro Conti,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Gold,logistic,,2026-06-04 14:53:08,Open,
+T2717,Clara Dubois,Are you guys open to collaborations?,Gold,general inquiry,,2026-05-29 14:53:08,Closed,
+T2718,Dang Thu Trang,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Gold,account management,,2026-05-25 14:53:08,Pending,
+T2719,Elena Rossi,I'm interested in becoming a reseller of your products.,Bronze,sales,,2026-05-22 14:53:08,Pending,
+T2720,Vu Thi Lan,Do you offer bulk discounts for enterprise clients?,Gold,sales,,2026-06-01 14:53:08,Closed,
+T2721,Emma Johnson,I'm interested in becoming a reseller of your products.,Silver,sales,,2026-06-05 14:53:08,Pending,
+T2722,Tran Minh Chau,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Silver,billing,,2026-05-31 14:53:08,Pending,
+T2723,Beatriz Santos,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-06-10 14:53:08,Open,
+T2724,Erik Hansen,How do I update my credit card info in the system?,Silver,billing,,2026-06-14 14:53:08,Closed,
+T2725,Sven Johansson,Mình cần thông tin liên hệ của bộ phận đối tác để hợp tác dài hạn.,Gold,general inquiry,,2026-06-11 14:53:08,Closed,
+T2726,Benjamin Brown,"I need to return this item, it doesn't fit my size.",Gold,returns,,2026-05-18 14:53:08,Closed,
+T2727,Benjamin Brown,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-17 14:53:08,Closed,
+T2728,William Taylor,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Bronze,sales,,2026-06-06 14:53:08,Open,
+T2729,Beatriz Santos,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-05-24 14:53:08,Closed,
+T2730,Tran Minh Chau,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Silver,technical,,2026-06-13 14:53:08,Closed,
+T2731,Vo Minh Phuong,"My tracking link is broken, it just shows a blank white page.",Silver,logistic,,2026-05-20 14:53:08,Open,
+T2732,Hoang Duc Anh,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-05-20 14:53:08,Closed,
+T2733,Samuel Taylor,"I need to return this item, it doesn't fit my size.",Bronze,returns,,2026-05-29 14:53:08,Closed,
+T2734,Mateo Garcia,"Mình quên mất username rồi, khôi phục bằng cách nào?",Gold,account management,,2026-05-26 14:53:08,Pending,
+T2735,Lukas Schmidt,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-05-23 14:53:08,Open,
+T2736,Tran Thi Mai,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Gold,logistic,,2026-05-17 14:53:08,Closed,
+T2737,Martina Costa,"I've been trying to reset my password for an hour, no email received.",Gold,account management,,2026-05-31 14:53:08,Open,
+T2738,Freja Nielsen,"Đơn hàng #7509 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Bronze,logistic,,2026-06-11 14:53:08,Pending,
+T2739,Joseph Anderson,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Silver,billing,,2026-05-25 14:53:08,Closed,
+T2740,Hoang Duc Anh,App keeps crashing on startup. Very frustrating.,Gold,technical,,2026-05-21 14:53:08,Pending,
+T2741,Matthew Gonzalez,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Bronze,general inquiry,,2026-05-18 14:53:08,Pending,
+T2742,Jakub Kowalski,I paid for premium but I'm still seeing ads. Please help.,Gold,billing,,2026-06-13 14:53:08,Open,
+T2743,Jakub Kowalski,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-06-12 14:53:08,Closed,
+T2744,Oskar Berg,Tại sao mình không nhận được thông báo đẩy của app?,Silver,account management,,2026-05-30 14:53:08,Pending,
+T2745,Nguyen Hoang Nam,"I've been trying to reset my password for an hour, no email received.",Silver,account management,,2026-05-29 14:53:08,Closed,
+T2746,Lukas Schmidt,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Gold,sales,,2026-06-02 14:53:08,Open,
+T2747,Grace Thomas,I was overcharged on my last invoice. Please fix this.,Gold,billing,,2026-06-04 14:53:08,Closed,
+T2748,Nguyen Hoang Nam,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-06-12 14:53:08,Open,
+T2749,Alexander Rodriguez,I'm interested in becoming a reseller of your products.,Silver,sales,,2026-05-29 14:53:08,Open,
+T2750,Le Thu Huong,Are you guys open to collaborations?,Bronze,general inquiry,,2026-06-08 14:53:08,Closed,
+T2751,Hoang Duc Anh,How do I update my credit card info in the system?,Bronze,billing,,2026-05-29 14:53:08,Pending,
+T2752,Harper Lopez,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-06-02 14:53:08,Pending,
+T2753,Dang Minh Tri,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Silver,account management,,2026-06-01 14:53:08,Open,
+T2754,Sophia Miller,Tại sao đơn hàng #4336 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Silver,billing,,2026-06-13 14:53:08,Open,
+T2755,Dang Minh Tri,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-05-20 14:53:08,Closed,
+T2756,Sophia Miller,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-05-31 14:53:08,Closed,
+T2757,Emma Johnson,Mình cần thông tin liên hệ của bộ phận đối tác để hợp tác dài hạn.,Bronze,general inquiry,,2026-05-26 14:53:08,Open,
+T2758,Mateo Garcia,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Bronze,logistic,,2026-06-15 14:53:08,Pending,
+T2759,Olivia Smith,Tại sao đơn hàng #7563 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Gold,billing,,2026-05-21 14:53:08,Open,
+T2760,Tran Minh Chau,"Mình quên mất username rồi, khôi phục bằng cách nào?",Gold,account management,,2026-05-30 14:53:08,Pending,
+T2761,Anna Novak,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-06-12 14:53:08,Open,
+T2762,Daniel Hernandez,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Bronze,logistic,,2026-05-25 14:53:08,Pending,
+T2763,Clara Dubois,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Bronze,returns,,2026-06-06 14:53:08,Pending,
+T2764,Sven Johansson,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Silver,returns,,2026-06-08 14:53:08,Closed,
+T2765,William Taylor,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-26 14:53:08,Closed,
+T2766,Beatriz Santos,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Silver,general inquiry,,2026-05-24 14:53:08,Pending,
+T2767,Jonas Lindberg,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-06-05 14:53:08,Closed,
+T2768,Victoria Moore,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Silver,returns,,2026-06-02 14:53:08,Closed,
+T2769,Nguyen Hoang Nam,"Đơn hàng #5826 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Silver,logistic,,2026-05-17 14:53:08,Open,
+T2770,Le Minh Tuan,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Gold,technical,,2026-06-08 14:53:08,Pending,
+T2771,Elizabeth Wilson,"Mình quên mất username rồi, khôi phục bằng cách nào?",Silver,account management,,2026-06-04 14:53:08,Pending,
+T2772,Elena Rossi,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Bronze,billing,,2026-05-20 14:53:08,Pending,
+T2773,Isabella Müller,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Gold,returns,,2026-05-21 14:53:08,Pending,
+T2774,Tran Minh Chau,My order #7670 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-06-14 14:53:08,Open,
+T2775,Lucas Martinez,Is it possible to expedite my order #7289? I need it for a gift.,Bronze,logistic,,2026-06-04 14:53:08,Open,
+T2776,Tran Thi Mai,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Silver,sales,,2026-05-26 14:53:08,Open,
+T2777,Harper Lopez,"I need to return this item, it doesn't fit my size.",Bronze,returns,,2026-05-22 14:53:08,Open,
+T2778,Maximilian Weber,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-06-13 14:53:08,Pending,
+T2779,Alessandro Conti,My order #2415 is literally 5 days late. Where is my stuff?,Silver,logistic,,2026-06-01 14:53:08,Closed,
+T2780,Sven Johansson,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-06-04 14:53:08,Pending,
+T2781,Clara Dubois,"Đơn hàng #7335 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-05-30 14:53:08,Open,
+T2782,Vo Minh Phuong,"My account is showing the wrong name, how can I edit my profile?",Gold,account management,,2026-06-12 14:53:08,Open,
+T2783,Jakub Kowalski,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Gold,technical,,2026-06-09 14:53:08,Open,
+T2784,Do Xuan Bach,I'm getting 'Unauthorized' error whenever I click on my orders.,Silver,technical,,2026-05-24 14:53:08,Closed,
+T2785,Vo Minh Phuong,Tại sao mình không nhận được thông báo đẩy của app?,Bronze,account management,,2026-05-17 14:53:08,Pending,
+T2786,Lukas Schmidt,How do I update my credit card info in the system?,Bronze,billing,,2026-06-08 14:53:08,Pending,
+T2787,Do Xuan Bach,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Gold,sales,,2026-05-18 14:53:08,Open,
+T2788,Samuel Taylor,Can I exchange this for a different color?,Bronze,returns,,2026-05-30 14:53:08,Closed,
+T2789,Olivia Smith,Are you guys open to collaborations?,Bronze,general inquiry,,2026-05-17 14:53:08,Pending,
+T2790,Sofia Silva,"My tracking link is broken, it just shows a blank white page.",Silver,logistic,,2026-06-11 14:53:08,Pending,
+T2791,Le Thu Huong,"Website báo lỗi 500, không truy cập được.",Silver,technical,,2026-06-09 14:53:08,Open,
+T2792,Alessandro Conti,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Gold,sales,,2026-06-04 14:53:08,Pending,
+T2793,Tran Thi Mai,"My account is showing the wrong name, how can I edit my profile?",Bronze,account management,,2026-05-17 14:53:08,Open,
+T2794,Alexander Rodriguez,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-05-29 14:53:08,Pending,
+T2795,Phan Quoc Bao,Can I exchange this for a different color?,Silver,returns,,2026-05-21 14:53:08,Pending,
+T2796,Erik Hansen,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Silver,logistic,,2026-06-01 14:53:08,Pending,
+T2797,Anna Novak,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Bronze,returns,,2026-05-29 14:53:08,Open,
+T2798,Alessandro Conti,Are you guys open to collaborations?,Gold,general inquiry,,2026-06-12 14:53:08,Closed,
+T2799,Bui Thu Ha,"The website is loading incredibly slowly today, is the server down?",Gold,technical,,2026-05-31 14:53:08,Open,
+T2800,Evelyn Martinez,Why is my package moving between hubs for 3 days now?,Bronze,logistic,,2026-05-27 14:53:08,Open,
+T2801,Joseph Anderson,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-05-27 14:53:08,Closed,
+T2802,Daniel Hernandez,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Gold,returns,,2026-06-01 14:53:08,Closed,
+T2803,Amelia Garcia,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-22 14:53:08,Closed,
+T2804,Do Xuan Bach,"The package arrived damaged, I want a replacement.",Bronze,returns,,2026-05-29 14:53:08,Closed,
+T2805,Jonas Lindberg,Do you offer bulk discounts for enterprise clients?,Gold,sales,,2026-05-30 14:53:08,Open,
+T2806,Le Minh Tuan,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-05-28 14:53:08,Open,
+T2807,Hoang Thi Yen,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Bronze,account management,,2026-05-19 14:53:08,Closed,
+T2808,Oskar Berg,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Gold,sales,,2026-06-03 14:53:08,Closed,
+T2809,Dang Thu Trang,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Gold,sales,,2026-05-26 14:53:08,Closed,
+T2810,Alexander Rodriguez,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Bronze,billing,,2026-05-24 14:53:08,Pending,
+T2811,Nguyen Thi Bich,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-04 14:53:08,Closed,
+T2812,Tran Thi Mai,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-06-11 14:53:08,Closed,
+T2813,Pham Duc Minh,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-05-21 14:53:08,Pending,
+T2814,Henry Wilson,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-05-28 14:53:08,Open,
+T2815,Le Minh Tuan,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Gold,billing,,2026-05-19 14:53:08,Closed,
+T2816,Jonas Lindberg,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-06-14 14:53:08,Closed,
+T2817,Harper Lopez,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Silver,general inquiry,,2026-06-15 14:53:08,Closed,
+T2818,Charlotte Davis,"I need to return this item, it doesn't fit my size.",Gold,returns,,2026-05-26 14:53:08,Closed,
+T2819,Grace Thomas,I'm getting 'Unauthorized' error whenever I click on my orders.,Gold,technical,,2026-05-21 14:53:08,Pending,
+T2820,Harper Lopez,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-06-05 14:53:08,Open,
+T2821,Oskar Berg,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-06-09 14:53:08,Pending,
+T2822,Nguyen Hoang Nam,Tại sao đơn hàng #1793 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Gold,billing,,2026-06-10 14:53:08,Closed,
+T2823,Nguyen Thi Bich,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Bronze,returns,,2026-06-14 14:53:08,Closed,
+T2824,Nguyen Hoang Nam,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-05-27 14:53:08,Open,
+T2825,Vo Minh Phuong,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Silver,billing,,2026-05-22 14:53:08,Closed,
+T2826,Vu Minh Khoi,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Silver,billing,,2026-05-27 14:53:08,Pending,
+T2827,William Taylor,App keeps crashing on startup. Very frustrating.,Gold,technical,,2026-06-15 14:53:08,Open,
+T2828,Elizabeth Wilson,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-06-03 14:53:08,Closed,
+T2829,Emma Johnson,App keeps crashing on startup. Very frustrating.,Bronze,technical,,2026-05-24 14:53:08,Closed,
+T2830,Pham Thanh Thao,"My account is showing the wrong name, how can I edit my profile?",Gold,account management,,2026-05-25 14:53:08,Open,
+T2831,Daniel Hernandez,I paid for premium but I'm still seeing ads. Please help.,Bronze,billing,,2026-06-05 14:53:08,Closed,
+T2832,Lucas Martinez,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-06-11 14:53:08,Pending,
+T2833,Sophia Miller,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Gold,general inquiry,,2026-05-24 14:53:08,Pending,
+T2834,Erik Hansen,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Bronze,logistic,,2026-05-26 14:53:08,Pending,
+T2835,Amelia Garcia,I'm getting 'Unauthorized' error whenever I click on my orders.,Bronze,technical,,2026-05-30 14:53:08,Closed,
+T2836,Bui Van Long,How do I update my credit card info in the system?,Gold,billing,,2026-05-20 14:53:08,Pending,
+T2837,Do Xuan Bach,Do you offer bulk discounts for enterprise clients?,Bronze,sales,,2026-05-22 14:53:08,Pending,
+T2838,Alice Lefebvre,"Đơn hàng #1891 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Silver,logistic,,2026-05-17 14:53:08,Open,
+T2839,Olivia Smith,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Silver,billing,,2026-06-10 14:53:08,Closed,
+T2840,Hugo Dubois,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-05-20 14:53:08,Closed,
+T2841,Elizabeth Wilson,App keeps crashing on startup. Very frustrating.,Silver,technical,,2026-05-30 14:53:08,Pending,
+T2842,Lukas Schmidt,"I've been trying to reset my password for an hour, no email received.",Bronze,account management,,2026-06-15 14:53:08,Pending,
+T2843,Dang Minh Tri,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-06-14 14:53:08,Open,
+T2844,Isabella Müller,Are you guys open to collaborations?,Silver,general inquiry,,2026-06-05 14:53:08,Pending,
+T2845,Bui Thu Ha,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Bronze,logistic,,2026-06-04 14:53:08,Closed,
+T2846,Sophia Miller,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-06-01 14:53:08,Pending,
+T2847,Samuel Taylor,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Silver,logistic,,2026-05-31 14:53:08,Closed,
+T2848,Elizabeth Wilson,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-06-05 14:53:08,Open,
+T2849,Katarina Petrov,"Đơn hàng #2543 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-05-21 14:53:08,Closed,
+T2850,Lukas Schmidt,I'm interested in becoming a reseller of your products.,Gold,sales,,2026-06-08 14:53:08,Closed,
+T2851,Le Minh Tuan,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-05-31 14:53:08,Closed,
+T2852,Isabella Müller,How do I update my credit card info in the system?,Bronze,billing,,2026-06-01 14:53:08,Pending,
+T2853,Emma Johnson,I paid for premium but I'm still seeing ads. Please help.,Silver,billing,,2026-05-18 14:53:08,Closed,
+T2854,Vo Minh Phuong,App keeps crashing on startup. Very frustrating.,Bronze,technical,,2026-05-25 14:53:08,Open,
+T2855,Dang Thu Trang,Mình cần thông tin liên hệ của bộ phận đối tác để hợp tác dài hạn.,Bronze,general inquiry,,2026-06-01 14:53:08,Open,
+T2856,Anna Novak,"Website báo lỗi 500, không truy cập được.",Gold,technical,,2026-06-13 14:53:08,Open,
+T2857,Grace Thomas,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-05-17 14:53:08,Closed,
+T2858,Nguyen Hoang Nam,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Gold,logistic,,2026-06-09 14:53:08,Open,
+T2859,Harper Lopez,Tracking shows delivered but nothing at my door. Can you check this?,Bronze,logistic,,2026-05-25 14:53:08,Pending,
+T2860,Bui Van Long,Why is my package moving between hubs for 3 days now?,Silver,logistic,,2026-06-07 14:53:08,Pending,
+T2861,Le Minh Tuan,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Bronze,sales,,2026-05-27 14:53:08,Closed,
+T2862,Erik Hansen,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Bronze,returns,,2026-06-01 14:53:08,Closed,
+T2863,Amelia Garcia,"Đơn hàng #1531 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Bronze,logistic,,2026-06-03 14:53:08,Closed,
+T2864,Clara Dubois,How do I update my credit card info in the system?,Bronze,billing,,2026-05-26 14:53:08,Pending,
+T2865,Vu Minh Khoi,"Website báo lỗi 500, không truy cập được.",Silver,technical,,2026-06-05 14:53:08,Closed,
+T2866,Beatriz Santos,Tại sao đơn hàng #3851 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Gold,billing,,2026-06-10 14:53:08,Closed,
+T2867,Bui Thu Ha,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-05-21 14:53:08,Closed,
+T2868,Lukas Schmidt,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Gold,technical,,2026-05-29 14:53:08,Closed,
+T2869,Tran Thi Mai,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Bronze,technical,,2026-05-19 14:53:08,Pending,
+T2870,Harper Lopez,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Bronze,technical,,2026-06-01 14:53:08,Closed,
+T2871,Emma Johnson,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Silver,billing,,2026-06-06 14:53:08,Open,
+T2872,Martina Costa,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-06-09 14:53:08,Pending,
+T2873,Alice Lefebvre,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-20 14:53:08,Open,
+T2874,Bui Thu Ha,I paid for premium but I'm still seeing ads. Please help.,Gold,billing,,2026-05-26 14:53:08,Closed,
+T2875,Phan Quoc Bao,What are the store hours for your physical locations?,Gold,general inquiry,,2026-06-06 14:53:08,Open,
+T2876,Isabella Müller,Tại sao mình không nhận được thông báo đẩy của app?,Silver,account management,,2026-06-05 14:53:08,Pending,
+T2877,Tran Minh Chau,The discount code did not apply to my final checkout price.,Silver,billing,,2026-05-30 14:53:08,Open,
+T2878,Olivia Smith,"Mình chưa nhận được hóa đơn VAT cho đơn hàng tháng trước, gửi lại giúp nhé.",Bronze,billing,,2026-06-15 14:53:08,Closed,
+T2879,Isabella Müller,Why is my package moving between hubs for 3 days now?,Silver,logistic,,2026-06-03 14:53:08,Closed,
+T2880,Hoang Thi Yen,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Gold,returns,,2026-05-19 14:53:08,Closed,
+T2881,Le Minh Tuan,"Website báo lỗi 500, không truy cập được.",Bronze,technical,,2026-05-25 14:53:08,Closed,
+T2882,Jonas Lindberg,"I've been trying to reset my password for an hour, no email received.",Silver,account management,,2026-05-30 14:53:08,Open,
+T2883,Grace Thomas,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-05-24 14:53:08,Closed,
+T2884,Alice Lefebvre,Tại sao đơn hàng #4060 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Silver,billing,,2026-05-17 14:53:08,Closed,
+T2885,Alessandro Conti,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-06-15 14:53:08,Pending,
+T2886,Phan Quoc Bao,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Gold,billing,,2026-05-26 14:53:08,Open,
+T2887,Dang Minh Tri,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Bronze,logistic,,2026-06-11 14:53:08,Closed,
+T2888,Victoria Moore,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Gold,general inquiry,,2026-05-17 14:53:08,Open,
+T2889,Oskar Berg,"The package arrived damaged, I want a replacement.",Gold,returns,,2026-05-17 14:53:08,Pending,
+T2890,Victoria Moore,"My tracking link is broken, it just shows a blank white page.",Silver,logistic,,2026-06-05 14:53:08,Pending,
+T2891,Harper Lopez,"Sản phẩm bị lỗi kỹ thuật, mình muốn đổi cái mới.",Silver,returns,,2026-06-08 14:53:08,Open,
+T2892,Pham Duc Minh,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Bronze,general inquiry,,2026-05-29 14:53:08,Closed,
+T2893,Lucas Martinez,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Bronze,billing,,2026-06-11 14:53:08,Pending,
+T2894,Hugo Dubois,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-05-20 14:53:08,Closed,
+T2895,Olivia Smith,What are the store hours for your physical locations?,Gold,general inquiry,,2026-06-04 14:53:08,Closed,
+T2896,Emma Johnson,Are you guys open to collaborations?,Silver,general inquiry,,2026-06-09 14:53:08,Closed,
+T2897,Grace Thomas,My order #5990 is literally 5 days late. Where is my stuff?,Gold,logistic,,2026-05-25 14:53:08,Pending,
+T2898,Isabella Müller,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-06-14 14:53:08,Closed,
+T2899,Vu Minh Khoi,I'm interested in becoming a reseller of your products.,Gold,sales,,2026-06-15 14:53:08,Closed,
+T2900,Benjamin Brown,Tại sao đơn hàng #7219 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Bronze,billing,,2026-05-22 14:53:08,Pending,
+T2901,Harper Lopez,"My account is showing the wrong name, how can I edit my profile?",Silver,account management,,2026-05-21 14:53:08,Closed,
+T2902,Maximilian Weber,Is it possible to expedite my order #4300? I need it for a gift.,Gold,logistic,,2026-05-22 14:53:08,Pending,
+T2903,Katarina Petrov,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Gold,account management,,2026-05-25 14:53:08,Pending,
+T2904,Isabella Müller,App keeps crashing on startup. Very frustrating.,Bronze,technical,,2026-05-31 14:53:08,Closed,
+T2905,Erik Hansen,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Gold,billing,,2026-06-14 14:53:08,Open,
+T2906,Maximilian Weber,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Silver,returns,,2026-06-05 14:53:08,Closed,
+T2907,Emma Johnson,I'm getting 'Unauthorized' error whenever I click on my orders.,Gold,technical,,2026-05-22 14:53:08,Open,
+T2908,Sven Johansson,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Silver,account management,,2026-06-07 14:53:08,Pending,
+T2909,Elena Rossi,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Silver,logistic,,2026-05-31 14:53:08,Pending,
+T2910,Charlotte Davis,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Bronze,general inquiry,,2026-06-15 14:53:08,Closed,
+T2911,Beatriz Santos,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Silver,logistic,,2026-06-12 14:53:08,Pending,
+T2912,Oskar Berg,App keeps crashing on startup. Very frustrating.,Bronze,technical,,2026-05-22 14:53:08,Pending,
+T2913,Alice Lefebvre,My order #9651 is literally 5 days late. Where is my stuff?,Silver,logistic,,2026-06-02 14:53:08,Pending,
+T2914,Vu Minh Khoi,"Website báo lỗi 500, không truy cập được.",Bronze,technical,,2026-06-12 14:53:08,Closed,
+T2915,Martina Costa,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Gold,billing,,2026-06-02 14:53:08,Open,
+T2916,Hoang Thi Yen,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-05-18 14:53:08,Closed,
+T2917,Phan Quoc Bao,Sắp hết thời gian dự kiến giao hàng rồi mà vẫn chưa thấy cập nhật gì cả.,Gold,logistic,,2026-06-04 14:53:08,Pending,
+T2918,Le Thu Huong,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Bronze,returns,,2026-06-01 14:53:08,Pending,
+T2919,Jakub Kowalski,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-22 14:53:08,Pending,
+T2920,Joseph Anderson,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-05-26 14:53:08,Closed,
+T2921,Jakub Kowalski,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Bronze,sales,,2026-06-10 14:53:08,Pending,
+T2922,Nguyen Van An,"I need to return this item, it doesn't fit my size.",Bronze,returns,,2026-06-12 14:53:08,Open,
+T2923,Phan Quoc Bao,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Silver,logistic,,2026-05-21 14:53:08,Open,
+T2924,Jonas Lindberg,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Gold,billing,,2026-05-20 14:53:08,Open,
+T2925,Le Minh Tuan,Do you offer bulk discounts for enterprise clients?,Gold,sales,,2026-06-10 14:53:08,Closed,
+T2926,Lucas Martinez,"The package arrived damaged, I want a replacement.",Silver,returns,,2026-05-29 14:53:08,Pending,
+T2927,Lucas Martinez,Do you offer bulk discounts for enterprise clients?,Silver,sales,,2026-05-28 14:53:08,Closed,
+T2928,Phan Quoc Bao,"Website báo lỗi 500, không truy cập được.",Silver,technical,,2026-06-03 14:53:08,Pending,
+T2929,Clara Dubois,"Đơn hàng #9745 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-06-09 14:53:08,Pending,
+T2930,Vo Minh Phuong,"I've been trying to reset my password for an hour, no email received.",Silver,account management,,2026-05-19 14:53:08,Open,
+T2931,Tran Minh Chau,I paid for premium but I'm still seeing ads. Please help.,Silver,billing,,2026-05-26 14:53:08,Open,
+T2932,James Anderson,Tracking shows delivered but nothing at my door. Can you check this?,Silver,logistic,,2026-05-29 14:53:08,Closed,
+T2933,Hoang Duc Anh,Có bảng size chart (bảng hướng dẫn chọn size) cho sản phẩm này không?,Bronze,general inquiry,,2026-05-26 14:53:08,Open,
+T2934,Victoria Moore,Mình cần thông tin liên hệ của bộ phận đối tác để hợp tác dài hạn.,Bronze,general inquiry,,2026-06-02 14:53:08,Open,
+T2935,Vu Minh Khoi,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Bronze,sales,,2026-05-19 14:53:08,Pending,
+T2936,Nguyen Thi Bich,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-06-13 14:53:08,Open,
+T2937,Elizabeth Wilson,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Gold,billing,,2026-06-07 14:53:08,Closed,
+T2938,Elizabeth Wilson,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Gold,logistic,,2026-05-23 14:53:08,Pending,
+T2939,Samuel Taylor,"My tracking link is broken, it just shows a blank white page.",Gold,logistic,,2026-05-17 14:53:08,Open,
+T2940,Elena Rossi,Tại sao đơn hàng #2319 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Silver,billing,,2026-05-31 14:53:08,Pending,
+T2941,Mateo Garcia,App keeps crashing on startup. Very frustrating.,Gold,technical,,2026-05-19 14:53:08,Pending,
+T2942,Sophia Miller,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Bronze,logistic,,2026-06-13 14:53:08,Pending,
+T2943,Harper Lopez,Tại sao thẻ của tôi bị từ chối trong khi vẫn còn hạn mức?,Silver,billing,,2026-05-17 14:53:08,Closed,
+T2944,Elizabeth Wilson,Why is my package moving between hubs for 3 days now?,Silver,logistic,,2026-05-19 14:53:08,Closed,
+T2945,Elena Rossi,Cứ bấm vào giỏ hàng là ứng dụng bị văng (force close).,Gold,technical,,2026-06-10 14:53:08,Pending,
+T2946,Martina Costa,Tại sao đơn hàng #7501 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Gold,billing,,2026-05-24 14:53:08,Closed,
+T2947,Charlotte Davis,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-19 14:53:08,Pending,
+T2948,Hoang Thi Yen,I paid for premium but I'm still seeing ads. Please help.,Bronze,billing,,2026-06-11 14:53:08,Pending,
+T2949,Katarina Petrov,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-06-04 14:53:08,Pending,
+T2950,Dang Minh Tri,How do I update my credit card info in the system?,Gold,billing,,2026-06-15 14:53:08,Pending,
+T2951,Vu Thi Lan,Do you offer bulk discounts for enterprise clients?,Silver,sales,,2026-05-22 14:53:08,Pending,
+T2952,Hoang Thi Yen,The discount code did not apply to my final checkout price.,Bronze,billing,,2026-05-29 14:53:08,Pending,
+T2953,Vu Minh Khoi,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-05-25 14:53:08,Closed,
+T2954,Freja Nielsen,My order #6032 is literally 5 days late. Where is my stuff?,Bronze,logistic,,2026-05-20 14:53:08,Pending,
+T2955,Isabella Müller,I'm getting 'Unauthorized' error whenever I click on my orders.,Gold,technical,,2026-05-18 14:53:08,Open,
+T2956,Freja Nielsen,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-25 14:53:08,Open,
+T2957,Amelia Garcia,Tại sao đơn hàng #3753 lại bị trừ tiền 2 lần vậy? Hoàn tiền cho tôi ngay.,Silver,billing,,2026-05-31 14:53:08,Closed,
+T2958,Henry Wilson,"I'm thinking of upgrading to Gold tier, what are the extra perks?",Gold,sales,,2026-05-24 14:53:08,Open,
+T2959,Amelia Garcia,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-05-28 14:53:08,Closed,
+T2960,Olivia Smith,Làm sao để tham gia chương trình khách hàng thân thiết vậy?,Gold,general inquiry,,2026-05-28 14:53:08,Closed,
+T2961,Pham Duc Minh,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Gold,sales,,2026-05-28 14:53:08,Pending,
+T2962,Sofia Silva,Why is my package moving between hubs for 3 days now?,Gold,logistic,,2026-06-02 14:53:08,Pending,
+T2963,Vu Thi Lan,"Tài khoản bị khóa vô lý quá, tôi cần hỗ trợ mở lại gấp.",Bronze,account management,,2026-06-12 14:53:08,Pending,
+T2964,Vu Thi Lan,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-06-13 14:53:08,Pending,
+T2965,Elena Rossi,What are the store hours for your physical locations?,Bronze,general inquiry,,2026-06-11 14:53:08,Pending,
+T2966,Elena Rossi,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Silver,general inquiry,,2026-05-30 14:53:08,Open,
+T2967,Samuel Taylor,"I need to return this item, it doesn't fit my size.",Silver,returns,,2026-05-25 14:53:08,Open,
+T2968,Isabella Müller,Is it possible to expedite my order #9540? I need it for a gift.,Gold,logistic,,2026-06-10 14:53:08,Open,
+T2969,Anna Novak,How do I update my credit card info in the system?,Gold,billing,,2026-05-21 14:53:08,Pending,
+T2970,William Taylor,"Giao hàng chậm quá, mình cần gấp mà chưa thấy gì. Check giúp mình với.",Gold,logistic,,2026-05-23 14:53:08,Pending,
+T2971,Matthew Gonzalez,"My account is showing the wrong name, how can I edit my profile?",Silver,account management,,2026-05-31 14:53:08,Open,
+T2972,Joseph Anderson,"The package arrived damaged, I want a replacement.",Gold,returns,,2026-05-20 14:53:08,Open,
+T2973,Samuel Taylor,I was overcharged on my last invoice. Please fix this.,Gold,billing,,2026-06-13 14:53:08,Closed,
+T2974,Clara Dubois,I was overcharged on my last invoice. Please fix this.,Bronze,billing,,2026-05-18 14:53:08,Open,
+T2975,Jakub Kowalski,Bên mình muốn hợp tác làm event cùng thương hiệu của bạn.,Gold,general inquiry,,2026-05-19 14:53:08,Open,
+T2976,Le Thu Huong,"The package arrived damaged, I want a replacement.",Bronze,returns,,2026-05-30 14:53:08,Open,
+T2977,Harper Lopez,"My account is showing the wrong name, how can I edit my profile?",Gold,account management,,2026-05-27 14:53:08,Closed,
+T2978,Henry Wilson,"Đơn hàng #9618 của mình bị trễ quá lâu rồi, giờ không biết đang ở đâu luôn.",Gold,logistic,,2026-06-14 14:53:08,Closed,
+T2979,Elizabeth Wilson,Do you offer bulk discounts for enterprise clients?,Bronze,sales,,2026-06-13 14:53:08,Pending,
+T2980,Sofia Silva,"Mình quên mất username rồi, khôi phục bằng cách nào?",Gold,account management,,2026-05-25 14:53:08,Closed,
+T2981,Katarina Petrov,"Shipper làm móp hộp hàng của mình, mình muốn phản ánh vấn đề này.",Bronze,logistic,,2026-05-28 14:53:08,Pending,
+T2982,Martina Costa,"Mình thanh toán qua ví điện tử bị lỗi, tiền đã trừ nhưng đơn vẫn chưa xác nhận.",Bronze,billing,,2026-05-19 14:53:08,Pending,
+T2983,Henry Wilson,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Silver,logistic,,2026-05-29 14:53:08,Open,
+T2984,Lucas Martinez,Can I exchange this for a different color?,Silver,returns,,2026-06-04 14:53:08,Open,
+T2985,Dang Minh Tri,"Mình quên mất username rồi, khôi phục bằng cách nào?",Bronze,account management,,2026-05-27 14:53:08,Open,
+T2986,Pham Thanh Thao,"I need to return this item, it doesn't fit my size.",Bronze,returns,,2026-06-11 14:53:08,Pending,
+T2987,Sven Johansson,Is it possible to expedite my order #7196? I need it for a gift.,Gold,logistic,,2026-05-28 14:53:08,Closed,
+T2988,Nguyen Van An,Hàng đã tới kho bưu điện rồi mà sao shipper chưa giao cho mình nữa?,Gold,logistic,,2026-05-25 14:53:08,Pending,
+T2989,Matthew Gonzalez,Can I exchange this for a different color?,Bronze,returns,,2026-06-02 14:53:08,Closed,
+T2990,Jonas Lindberg,I paid for premium but I'm still seeing ads. Please help.,Silver,billing,,2026-06-02 14:53:08,Open,
+T2991,Sven Johansson,"Hàng bị lỗi, mình muốn hoàn trả và nhận lại tiền.",Gold,returns,,2026-05-27 14:53:08,Closed,
+T2992,Lukas Schmidt,Still waiting for my refund. It's been 2 weeks already. Ridiculous.,Silver,billing,,2026-05-18 14:53:08,Pending,
+T2993,Dang Minh Tri,I was overcharged on my last invoice. Please fix this.,Silver,billing,,2026-05-22 14:53:08,Pending,
+T2994,Pham Duc Minh,Why is my package moving between hubs for 3 days now?,Silver,logistic,,2026-06-01 14:53:08,Pending,
+T2995,Mateo Garcia,"My account is showing the wrong name, how can I edit my profile?",Silver,account management,,2026-05-22 14:53:08,Closed,
+T2996,Le Thu Huong,"I've been trying to reset my password for an hour, no email received.",Silver,account management,,2026-05-23 14:53:08,Pending,
+T2997,Benjamin Brown,"Mình muốn mua sỉ, bạn có bảng giá hay chiết khấu không?",Gold,sales,,2026-06-04 14:53:08,Closed,
+T2998,Matthew Gonzalez,Tôi muốn thay đổi phương thức thanh toán cho các đơn hàng sau này.,Silver,billing,,2026-06-05 14:53:08,Closed,
+T2999,Grace Thomas,"My account is showing the wrong name, how can I edit my profile?",Gold,account management,,2026-06-04 14:53:08,Pending,
+T3000,Heidi Davis,Are you open to partnership or collaboration opportunities?,Gold,general inquiry,,2026-05-18 00:00:00,Closed,Sales
+T3001,Bình Vũ,"I was charged twice for order #12345, please check and refund one charge.",Silver,billing,,2026-06-04 00:00:00,Open,Billing
+T3002,Bình Vũ,I cannot upload my documents for identity verification.,Silver,technical,,2026-05-27 00:00:00,Open,Technical
+T3003,Noah Johnson,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Bronze,logistic,,2026-06-08 00:00:00,Pending,Logistics
+T3004,Frank Johnson,"Tài khoản của tôi tự nhiên bị khóa, tôi không làm gì sai cả. Mở lại giúp tôi với.",Silver,Account management,,2026-05-30 00:00:00,Open,Technical
+T3005,Grace Johnson,"I've been trying to reset my password for an hour, but I never get the email. Please help!",Bronze,Account management,,2026-06-03 00:00:00,Pending,Technical
+T3006,Cường Phan,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Gold,logistic,,2026-06-09 00:00:00,Pending,Logistics
+T3007,Judy Wilson,"The page loads extremely slowly, is there a problem with your server?",Bronze,technical,,2026-06-16 00:00:00,Open,Technical
+T3008,Eve Rodriguez,Thanh toán qua thẻ tín dụng bị lỗi nhưng tiền trong tài khoản vẫn bị trừ.,Gold,billing,,2026-06-16 00:00:00,Pending,Billing
+T3009,Charlie Garcia,"I was charged twice for order #12345, please check and refund one charge.",Silver,billing,,2026-05-20 00:00:00,Open,Billing
+T3010,An Bùi,"Không thể tải ứng dụng về máy, nó cứ hiện lỗi 'Server error'.",Silver,technical,,2026-05-18 00:00:00,Open,
+T3011,Trang Lê,"I need to change my shipping address, I moved to a new apartment.",Gold,logistic,,2026-05-24 00:00:00,Closed,
+T3012,Minh Phan,"Trang web bị lỗi hiển thị, không thấy nút 'Thanh toán' đâu cả.",Silver,technical,,2026-06-03 00:00:00,Pending,
+T3013,Heidi Rodriguez,"I was charged twice for order #12345, please check and refund one charge.",Silver,billing,,2026-05-30 00:00:00,Pending,
+T3014,Hạnh Đặng,Are you open to partnership or collaboration opportunities?,Silver,general inquiry,,2026-06-08 00:00:00,Open,
+T3015,Bình Đỗ,How can I join the loyalty program to get more points?,Silver,general inquiry,,2026-05-27 00:00:00,Pending,
+T3016,Minh Phan,"The page loads extremely slowly, is there a problem with your server?",Bronze,technical,,2026-06-16 00:00:00,Open,
+T3017,Olivia Rodriguez,"Hóa đơn của tôi bị sai thông tin thuế, vui lòng điều chỉnh lại giúp.",Silver,billing,,2026-06-13 00:00:00,Pending,
+T3018,Trang Bùi,Can I change my registered email? I don't have access to the old one anymore.,Bronze,Account management,,2026-06-13 00:00:00,Closed,
+T3019,Frank Smith,Tại sao hóa đơn tháng này cao hơn bình thường vậy? Kiểm tra giúp tôi.,Gold,billing,,2026-06-12 00:00:00,Open,
+T3020,Grace Wilson,"The page loads extremely slowly, is there a problem with your server?",Bronze,technical,,2026-06-07 00:00:00,Pending,
+T3021,Trang Nguyễn,Can I change my registered email? I don't have access to the old one anymore.,Silver,Account management,,2026-06-16 00:00:00,Closed,
+T3022,Charlie Martinez,"Giao hàng chậm quá, tôi đợi cả tuần rồi mà chưa thấy hàng.",Gold,logistic,,2026-06-12 00:00:00,Closed,
+T3023,Judy Smith,"I suspect my account was compromised, someone else is using it!",Gold,Account management,,2026-06-08 00:00:00,Open,
+T3024,Bob Martinez,"Lỗi kết nối máy chủ, tôi không thể truy cập vào trang cá nhân.",Bronze,technical,,2026-06-10 00:00:00,Closed,
+T3025,Vân Bùi,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Silver,logistic,,2026-06-02 00:00:00,Closed,
+T3026,Hùng Bùi,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Gold,logistic,,2026-06-02 00:00:00,Pending,
+T3027,Hạnh Nguyễn,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Gold,logistic,,2026-05-24 00:00:00,Pending,
+T3028,Eve Doe,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Bronze,logistic,,2026-06-02 00:00:00,Open,
+T3029,Tú Lê,Where is my invoice? I haven't received the receipt for my last purchase.,Silver,billing,,2026-06-08 00:00:00,Open,
+T3030,Eve Rodriguez,What are your store opening hours on weekends?,Bronze,general inquiry,,2026-06-04 00:00:00,Closed,
+T3031,Mia Brown,I want to request a refund for the product I returned last week.,Silver,billing,,2026-06-04 00:00:00,Closed,
+T3032,Bob Garcia,"Tôi quên tên đăng nhập rồi, làm sao để lấy lại vậy?",Bronze,Account management,,2026-05-25 00:00:00,Pending,
+T3033,Hùng Nguyễn,Thanh toán qua thẻ tín dụng bị lỗi nhưng tiền trong tài khoản vẫn bị trừ.,Bronze,billing,,2026-06-08 00:00:00,Open,
+T3034,Grace Johnson,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Bronze,logistic,,2026-06-07 00:00:00,Closed,
+T3035,Noah Garcia,"My order #54321 hasn't arrived yet, and it's 3 days late.",Gold,logistic,,2026-06-11 00:00:00,Open,
+T3036,Eve Rodriguez,"The page loads extremely slowly, is there a problem with your server?",Gold,technical,,2026-05-22 00:00:00,Closed,
+T3037,Cường Bùi,Can you tell me the current status of my package? The tracking link is not working.,Silver,logistic,,2026-05-19 00:00:00,Open,
+T3038,Bình Phạm,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Silver,logistic,,2026-06-12 00:00:00,Pending,
+T3039,Charlie Miller,"Giao hàng chậm quá, tôi đợi cả tuần rồi mà chưa thấy hàng.",Gold,logistic,,2026-05-28 00:00:00,Pending,
+T3040,Olivia Smith,"The page loads extremely slowly, is there a problem with your server?",Gold,technical,,2026-06-05 00:00:00,Open,
+T3041,David Doe,Có thể hướng dẫn tôi cách sử dụng voucher giảm giá không?,Gold,general inquiry,,2026-05-29 00:00:00,Pending,
+T3042,Nam Hoàng,Tôi muốn cập nhật lại thông tin cá nhân vì vừa đổi số điện thoại.,Silver,Account management,,2026-05-27 00:00:00,Open,
+T3043,Minh Trần,Tại sao hóa đơn tháng này cao hơn bình thường vậy? Kiểm tra giúp tôi.,Silver,billing,,2026-05-21 00:00:00,Closed,
+T3044,Noah Doe,Có thể hướng dẫn tôi cách sử dụng voucher giảm giá không?,Gold,general inquiry,,2026-06-03 00:00:00,Open,
+T3045,Cường Vũ,"Lỗi kết nối máy chủ, tôi không thể truy cập vào trang cá nhân.",Silver,technical,,2026-06-02 00:00:00,Open,
+T3046,Heidi Brown,Are you open to partnership or collaboration opportunities?,Silver,general inquiry,,2026-05-18 00:00:00,Closed,
+T3047,Noah Miller,"Giao hàng chậm quá, tôi đợi cả tuần rồi mà chưa thấy hàng.",Gold,logistic,,2026-06-02 00:00:00,Open,
+T3048,Olivia Miller,Where is my invoice? I haven't received the receipt for my last purchase.,Gold,billing,,2026-05-19 00:00:00,Open,
+T3049,Bob Smith,"Không thể tải ứng dụng về máy, nó cứ hiện lỗi 'Server error'.",Bronze,technical,,2026-05-19 00:00:00,Open,
+T3050,Quân Trần,"The page loads extremely slowly, is there a problem with your server?",Bronze,technical,,2026-06-01 00:00:00,Closed,
+T3051,Lan Phạm,Where is my invoice? I haven't received the receipt for my last purchase.,Bronze,billing,,2026-06-13 00:00:00,Open,
+T3052,Hùng Nguyễn,How can I join the loyalty program to get more points?,Silver,general inquiry,,2026-05-31 00:00:00,Pending,
+T3053,Eve Brown,Thanh toán qua thẻ tín dụng bị lỗi nhưng tiền trong tài khoản vẫn bị trừ.,Gold,billing,,2026-06-02 00:00:00,Closed,
+T3054,Judy Wilson,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Bronze,logistic,,2026-05-21 00:00:00,Pending,
+T3055,Eve Brown,How can I join the loyalty program to get more points?,Bronze,general inquiry,,2026-06-16 00:00:00,Closed,
+T3056,An Hoàng,How can I join the loyalty program to get more points?,Gold,general inquiry,,2026-05-31 00:00:00,Closed,
+T3057,Bình Trần,"Giao hàng chậm quá, tôi đợi cả tuần rồi mà chưa thấy hàng.",Silver,logistic,,2026-06-10 00:00:00,Pending,
+T3058,Dũng Lê,Cho hỏi shop mình còn bán mẫu giày này không và bao giờ có hàng mới?,Gold,general inquiry,,2026-05-29 00:00:00,Pending,
+T3059,An Lê,Can you tell me the current status of my package? The tracking link is not working.,Gold,logistic,,2026-05-29 00:00:00,Closed,
+T3060,David Doe,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Gold,logistic,,2026-05-26 00:00:00,Open,
+T3061,David Davis,Tại sao hóa đơn tháng này cao hơn bình thường vậy? Kiểm tra giúp tôi.,Gold,billing,,2026-06-06 00:00:00,Pending,
+T3062,Cường Vũ,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Silver,logistic,,2026-05-29 00:00:00,Open,
+T3063,Bob Brown,"I've been trying to reset my password for an hour, but I never get the email. Please help!",Silver,Account management,,2026-05-28 00:00:00,Pending,
+T3064,Olivia Wilson,How can I join the loyalty program to get more points?,Silver,general inquiry,,2026-05-17 00:00:00,Closed,
+T3065,Dũng Đỗ,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Silver,logistic,,2026-06-15 00:00:00,Pending,
+T3066,Bình Bùi,"I need to change my shipping address, I moved to a new apartment.",Gold,logistic,,2026-05-23 00:00:00,Open,
+T3067,An Đặng,"Hóa đơn của tôi bị sai thông tin thuế, vui lòng điều chỉnh lại giúp.",Silver,billing,,2026-05-17 00:00:00,Closed,
+T3068,Bob Brown,"Hóa đơn của tôi bị sai thông tin thuế, vui lòng điều chỉnh lại giúp.",Gold,billing,,2026-05-25 00:00:00,Open,
+T3069,Liam Garcia,Phí vận chuyển tại sao lại cao như vậy? Có cách nào ship rẻ hơn không?,Gold,logistic,,2026-06-11 00:00:00,Closed,
+T3070,Eve Davis,Thanh toán qua thẻ tín dụng bị lỗi nhưng tiền trong tài khoản vẫn bị trừ.,Silver,billing,,2026-06-14 00:00:00,Open,
+T3071,Bob Martinez,Tôi muốn cập nhật lại thông tin cá nhân vì vừa đổi số điện thoại.,Bronze,Account management,,2026-05-31 00:00:00,Closed,
+T3072,Vân Phạm,I want to request a refund for the product I returned last week.,Bronze,billing,,2026-05-18 00:00:00,Closed,
+T3073,Phúc Hoàng,"Không thể tải ứng dụng về máy, nó cứ hiện lỗi 'Server error'.",Gold,technical,,2026-05-28 00:00:00,Closed,
+T3074,Liam Miller,The app keeps crashing every time I try to add items to the cart.,Gold,technical,,2026-06-06 00:00:00,Open,
+T3075,Grace Brown,Can you tell me the current status of my package? The tracking link is not working.,Bronze,logistic,,2026-05-20 00:00:00,Pending,
+T3076,Trang Bùi,Tại sao hóa đơn tháng này cao hơn bình thường vậy? Kiểm tra giúp tôi.,Bronze,billing,,2026-05-22 00:00:00,Open,
+T3077,An Đỗ,Cho hỏi shop mình còn bán mẫu giày này không và bao giờ có hàng mới?,Bronze,general inquiry,,2026-06-04 00:00:00,Pending,
+T3078,Heidi Davis,The app keeps crashing every time I try to add items to the cart.,Bronze,technical,,2026-05-18 00:00:00,Closed,
+T3079,Frank Doe,"Lỗi kết nối máy chủ, tôi không thể truy cập vào trang cá nhân.",Bronze,technical,,2026-05-19 00:00:00,Pending,
+T3080,Frank Brown,Are you open to partnership or collaboration opportunities?,Bronze,general inquiry,,2026-06-05 00:00:00,Closed,
+T3081,Hùng Trần,Cho hỏi shop mình còn bán mẫu giày này không và bao giờ có hàng mới?,Gold,general inquiry,,2026-06-01 00:00:00,Pending,
+T3082,Heidi Martinez,Thanh toán qua thẻ tín dụng bị lỗi nhưng tiền trong tài khoản vẫn bị trừ.,Bronze,billing,,2026-06-07 00:00:00,Open,
+T3083,Cường Bùi,How can I join the loyalty program to get more points?,Silver,general inquiry,,2026-05-25 00:00:00,Pending,
+T3084,Lan Bùi,"The page loads extremely slowly, is there a problem with your server?",Gold,technical,,2026-05-27 00:00:00,Pending,
+T3085,An Trần,Can I change my registered email? I don't have access to the old one anymore.,Silver,Account management,,2026-05-26 00:00:00,Open,
+T3086,An Trần,"Lỗi kết nối máy chủ, tôi không thể truy cập vào trang cá nhân.",Silver,technical,,2026-05-23 00:00:00,Open,
+T3087,Judy Rodriguez,The app keeps crashing every time I try to add items to the cart.,Gold,technical,,2026-05-27 00:00:00,Open,
+T3088,Eve Johnson,Are you open to partnership or collaboration opportunities?,Bronze,general inquiry,,2026-05-19 00:00:00,Closed,
+T3089,Mia Brown,What are your store opening hours on weekends?,Silver,general inquiry,,2026-05-31 00:00:00,Open,
+T3090,Grace Davis,"My order #54321 hasn't arrived yet, and it's 3 days late.",Gold,logistic,,2026-06-02 00:00:00,Closed,
+T3091,Judy Garcia,"Tôi quên tên đăng nhập rồi, làm sao để lấy lại vậy?",Bronze,Account management,,2026-05-23 00:00:00,Open,
+T3092,Judy Rodriguez,Tôi muốn hỏi về chính sách bảo hành của sản phẩm này.,Silver,general inquiry,,2026-05-28 00:00:00,Pending,
+T3093,Phúc Vũ,"Không thể tải ứng dụng về máy, nó cứ hiện lỗi 'Server error'.",Silver,technical,,2026-06-15 00:00:00,Closed,
+T3094,Karen Miller,"I've been trying to reset my password for an hour, but I never get the email. Please help!",Silver,Account management,,2026-05-27 00:00:00,Closed,
+T3095,Nam Bùi,"Hàng tôi nhận được bị hư hỏng, phần vỏ bị móp, tôi muốn đổi hàng.",Silver,logistic,,2026-06-06 00:00:00,Closed,
+T3096,Ivan Rodriguez,"Trang web bị lỗi hiển thị, không thấy nút 'Thanh toán' đâu cả.",Bronze,technical,,2026-06-01 00:00:00,Pending,
+T3097,Karen Rodriguez,Are you open to partnership or collaboration opportunities?,Bronze,general inquiry,,2026-05-23 00:00:00,Pending,
+T3098,Tú Phạm,What are your store opening hours on weekends?,Silver,general inquiry,,2026-05-31 00:00:00,Open,
+T3099,Liam Doe,How can I join the loyalty program to get more points?,Gold,general inquiry,,2026-06-06 00:00:00,Pending,

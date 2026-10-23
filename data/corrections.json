@@ -40,5 +40,19 @@
         "corrected_department": "Sales",
         "reason": "refund",
         "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": 3005,
+        "original_recommended_department": "High",
+        "corrected_department": "Account Management",
+        "reason": "",
+        "status": "Human_Reviewed"
+    },
+    {
+        "ticket_id": 3005,
+        "original_recommended_department": "High",
+        "corrected_department": "Account Management",
+        "reason": "",
+        "status": "Human_Reviewed"
     }
 ]

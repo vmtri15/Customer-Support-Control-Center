@@ -23,6 +23,7 @@ class FeedbackManager:
             "original_recommended_department": original_dept,
             "corrected_department": corrected_dept,
             "reason": reason,
+            "email_content": email_content,
             "status": "Human_Reviewed"
         }
         self.corrections.append(correction)
@@ -37,7 +38,7 @@ class FeedbackManager:
                 client = get_chroma_client()
                 collection = get_ticket_collection(client)
                 
-                collection.add(
+                collection.upsert(
                     documents=[email_content],
                     metadatas=[{"category": corrected_dept, "source": "human_correction"}],
                     ids=[f"correction_{ticket_id}"]
@@ -48,9 +49,13 @@ class FeedbackManager:
 
         print(f"✅ Feedback logged for Ticket {ticket_id}: Successfully re-routed to {corrected_dept}")
 
+    def latest_by_ticket(self) -> dict[str, dict]:
+        """Latest correction per ticket id (later corrections win)."""
+        return {str(c["ticket_id"]): c for c in self.corrections}
+
     def calculate_kpi(self, total_processed: int) -> dict:
         """Calculates business performance metrics (UAT KPIs)."""
-        total_corrections = len(self.corrections)
+        total_corrections = len(self.latest_by_ticket())  # re-corrections of a ticket count once
         accuracy = 100.0
         if total_processed > 0:
             accuracy = ((total_processed - total_corrections) / total_processed) * 100.0

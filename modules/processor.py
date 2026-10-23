@@ -1,47 +1,313 @@
 import json
 import re
 import os
+import shutil
+import datetime
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+import threading
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.calibration import CalibratedClassifierCV
 
 CONFIDENCE_THRESHOLD = 0.65
 
+# Khởi tạo underthesea 1 lần duy nhất ở mức Global để tối ưu tốc độ
+try:
+    from underthesea import word_tokenize as vn_tokenize
+    HAS_UNDERTHESEA = True
+except ImportError:
+    HAS_UNDERTHESEA = False
+    print("⚠️ Cảnh báo: Vui lòng cài đặt underthesea (pip install underthesea)")
+
+_tokenize_lock = threading.Lock()
 
 class MLClassifier:
-    """A One-layer ML model using TF-IDF and Logistic Regression for ticket classification."""
-    def __init__(self, training_data_path: str = "data/tickets.csv"):
+    """A ML model using TF-IDF and Support Vector Machine (SVM) with Active Learning."""
+    def __init__(self, training_data_path: str = "data/tickets.csv", force_retrain: bool = False):
         import joblib
         
-        self.model_path = "data/logreg_model.joblib"
-        self.vectorizer_path = "data/tfidf_vectorizer.joblib"
+        self.models_dir = Path("models")
+        self.metadata_path = self.models_dir / "metadata.json"
+        self.archive_dir = Path("data/archive")
+        self.corrections_path = Path("data/corrections.json")
+
+        self.models_dir.mkdir(exist_ok=True)
+        self.archive_dir.mkdir(parents=True, exist_ok=True)
         
-        if os.path.exists(self.model_path) and os.path.exists(self.vectorizer_path):
+        self.model_path = "data/svm_model.joblib" # fallback
+        self.vectorizer_path = "data/tfidf_vectorizer.joblib" # fallback
+        self.active_version = None
+        
+        self._load_metadata()
+        
+        if not force_retrain and os.path.exists(self.model_path) and os.path.exists(self.vectorizer_path):
             self.model = joblib.load(self.model_path)
             self.vectorizer = joblib.load(self.vectorizer_path)
             self.is_trained = True
-            print("✅ Loaded pre-trained ML classifier from disk.")
+            print(f"✅ Loaded ML classifier (Version: {self.active_version or 'Default'})")
         else:
-            self.vectorizer = TfidfVectorizer(stop_words='english')
-            self.model = LogisticRegression(max_iter=1000)
+            # Bỏ stop_words='english' vì dữ liệu có tiếng Việt, giữ ngram để bắt cụm từ
+            self.vectorizer = TfidfVectorizer(ngram_range=(1, 2))
+            # Sử dụng LinearSVC kết hợp CalibratedClassifierCV để tính xác suất từ khoảng cách siêu phẳng
+            base_svm = LinearSVC(class_weight='balanced', max_iter=2000)
+            self.model = CalibratedClassifierCV(estimator=base_svm, cv=5, method='sigmoid')
             self.is_trained = False
             self._train(training_data_path)
-            joblib.dump(self.model, self.model_path)
-            joblib.dump(self.vectorizer, self.vectorizer_path)
+
+    def _load_metadata(self):
+        if self.metadata_path.exists():
+            try:
+                with open(self.metadata_path, "r") as f:
+                    meta = json.load(f)
+                active_v = meta.get("active_version")
+                if active_v and active_v in meta.get("versions", {}):
+                    v_info = meta["versions"][active_v]
+                    if os.path.exists(v_info["model_path"]) and os.path.exists(v_info["vectorizer_path"]):
+                        self.model_path = v_info["model_path"]
+                        self.vectorizer_path = v_info["vectorizer_path"]
+                        self.active_version = active_v
+            except Exception as e:
+                print(f"⚠️ Error loading metadata: {e}")
+
+    def _preprocess_text(self, text: str) -> str:
+        """Làm sạch văn bản trước khi đưa vào mô hình."""
+        if not isinstance(text, str):
+            return ""
+        text = text.lower() # Chuyển về chữ thường
+        # Dùng [^\w\s] để giữ lại các ký tự có dấu của tiếng Việt, xóa dấu câu/ký tự đặc biệt
+        text = re.sub(r'[^\w\s]', ' ', text)
+        text = text.replace('_', ' ') # Loại bỏ thêm dấu gạch dưới nếu có
+        text = re.sub(r'\s+', ' ', text).strip() # Xóa khoảng trắng thừa
+        
+        # Tách từ tiếng Việt (Word Segmentation) bằng underthesea
+        if HAS_UNDERTHESEA:
+            with _tokenize_lock:
+                text = vn_tokenize(text, format="text")
+        return text
+
+    def _read_pdf_text(self, file_path: str) -> str:
+        """Trích xuất toàn bộ nội dung text từ file PDF."""
+        import pypdf
+        text = ""
+        try:
+            reader = pypdf.PdfReader(file_path)
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+        except Exception as e:
+            print(f"⚠️ Lỗi khi đọc file PDF {file_path}: {e}")
+        return text
+
+    def _read_docx_text(self, file_path: str) -> str:
+        """Trích xuất toàn bộ nội dung text từ file DOCX."""
+        import docx
+        text = ""
+        try:
+            doc = docx.Document(file_path)
+            for para in doc.paragraphs:
+                text += para.text + "\n"
+        except Exception as e:
+            print(f"⚠️ Lỗi khi đọc file DOCX {file_path}: {e}")
+        return text
+
+    def _load_dataframe_from_file(self, file_path: str) -> pd.DataFrame | None:
+        """Đọc file dữ liệu từ nhiều định dạng khác nhau và chuyển thành DataFrame."""
+        suffix = Path(file_path).suffix.lower()
+        try:
+            if suffix == ".csv":
+                return pd.read_csv(file_path)
+            elif suffix == ".json":
+                # Giả định file JSON có cấu trúc là một danh sách các object, mỗi object là một ticket
+                return pd.read_json(file_path, orient="records")
+            elif suffix == ".pdf":
+                content = self._read_pdf_text(file_path)
+                return pd.DataFrame([{"email_content": content, "category": None, "id": Path(file_path).stem}])
+            elif suffix == ".docx":
+                content = self._read_docx_text(file_path)
+                return pd.DataFrame([{"email_content": content, "category": None, "id": Path(file_path).stem}])
+            else:
+                print(f"⚠️ Định dạng file không được hỗ trợ: {suffix}")
+                return None
+        except Exception as e:
+            print(f"❌ Lỗi nghiêm trọng khi xử lý file {file_path}: {e}")
+            return None
+
+    def _apply_corrections(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Ghi đè nhãn bằng chỉnh sửa của nhân viên (Human-in-the-loop); thêm vé chưa có trong file."""
+        from modules.feedback_manager import FeedbackManager
+        latest = FeedbackManager(self.corrections_path).latest_by_ticket()
+        ids = df['id'].astype(str) if 'id' in df.columns else pd.Series("", index=df.index)
+
+        applied, new_rows = 0, []
+        for ticket_id, c in latest.items():
+            dept = (c.get("corrected_department") or "").strip()
+            if not dept:
+                continue
+            mask = ids == ticket_id
+            if mask.any():
+                df.loc[mask, 'category'] = dept
+                applied += 1
+            elif c.get("email_content"):
+                new_rows.append({"id": ticket_id, "email_content": c["email_content"], "category": dept})
+
+        if new_rows:
+            df = pd.concat([df, pd.DataFrame(new_rows)], ignore_index=True)
+        if applied or new_rows:
+            print(f"🧑‍🏫 Áp dụng {applied} chỉnh sửa, thêm {len(new_rows)} vé từ corrections.json")
+        return df
+
+    def _holdout_accuracy(self, df_final: pd.DataFrame, labeled_index) -> float | None:
+        """
+        Accuracy trên 20% vé có nhãn thật (gốc + chỉnh sửa của người), giữ lại không train.
+        Không chấm trên nhãn do SVM/LLM tự gán vì mô hình sẽ dễ dàng đoán đúng nhãn của chính nó.
+        """
+        from sklearn.base import clone
+        from sklearn.metrics import accuracy_score
+        from sklearn.model_selection import train_test_split
+
+        df_real = df_final.loc[df_final.index.intersection(labeled_index)]
+        try:
+            _, test_idx = train_test_split(
+                df_real.index, test_size=0.2, stratify=df_real['category'], random_state=42
+            )
+            df_train = df_final.drop(index=test_idx)
+            df_test = df_final.loc[test_idx]
+            vec = TfidfVectorizer(ngram_range=(1, 2))
+            model = clone(self.model)
+            model.fit(vec.fit_transform(df_train['processed_content']), df_train['category'])
+            preds = model.predict(vec.transform(df_test['processed_content']))
+            acc = float(accuracy_score(df_test['category'], preds))
+            print(f"📊 Held-out accuracy: {acc:.2%} trên {len(df_test)} vé có nhãn thật")
+            return acc
+        except ValueError as e:
+            # Quá ít mẫu mỗi lớp để chia stratified / CalibratedClassifierCV(cv=5)
+            print(f"⚠️ Không đủ dữ liệu có nhãn để đánh giá held-out: {e}")
+            return None
 
     def _train(self, data_path: str):
         try:
-            df = pd.read_csv(data_path)
-            if 'email_content' in df.columns and 'category' in df.columns:
-                # Drop rows with empty categories for training
-                df = df.dropna(subset=['category', 'email_content'])
-                X = self.vectorizer.fit_transform(df['email_content'])
-                y = df['category']
-                self.model.fit(X, y)
+            import joblib
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            version_id = f"v{timestamp}"
+            version_dir = self.models_dir / version_id
+            version_dir.mkdir(parents=True, exist_ok=True)
+            
+            archive_suffix = Path(data_path).suffix
+            archive_path = self.archive_dir / f"dataset_{timestamp}{archive_suffix}"
+            if os.path.exists(data_path):
+                shutil.copy(data_path, archive_path)
+
+            df_full = self._load_dataframe_from_file(data_path)
+            if df_full is None or df_full.empty:
+                print("⚠️ Không thể đọc dữ liệu từ file, dừng quá trình train.")
+                return
+
+            if 'email_content' in df_full.columns and 'category' in df_full.columns:
+                
+                # Áp dụng tiền xử lý
+                df_full = self._apply_corrections(df_full.copy())
+                df_full['processed_content'] = df_full['email_content'].apply(self._preprocess_text)
+                
+                # Chia tập dữ liệu có nhãn và không có nhãn
+                labeled_mask = df_full['category'].notna() & (df_full['category'].astype(str).str.strip() != "")
+                df_labeled = df_full[labeled_mask]
+                df_unlabeled = df_full[~labeled_mask]
+
+                if len(df_labeled) < 2:
+                    print("⚠️ LỖI: Cần ít nhất vài vé có nhãn ban đầu để làm seed data cho SVM.")
+                    self.is_trained = False
+                    return
+                
+                print(f"🚀 Bước 1: Train SVM ban đầu trên {len(df_labeled)} mẫu có sẵn.")
+                X_labeled = self.vectorizer.fit_transform(df_labeled['processed_content'])
+                y_labeled = df_labeled['category']
+                
+                base_initial_svm = LinearSVC(class_weight='balanced', max_iter=2000)
+                initial_model = CalibratedClassifierCV(estimator=base_initial_svm, cv=5, method='sigmoid')
+                initial_model.fit(X_labeled, y_labeled)
+                
+                if len(df_unlabeled) > 0:
+                    print(f"🔍 Bước 2: SVM dự đoán cho {len(df_unlabeled)} mẫu chưa có nhãn...")
+                    from modules.llm_client import chat_completion
+                    categories = ["Logistics", "Billing", "Technical", "Sales", "General Inquiry", "Account Management"]
+                    
+                    X_unlabeled = self.vectorizer.transform(df_unlabeled['processed_content'])
+                    probs = initial_model.predict_proba(X_unlabeled)
+                    preds = initial_model.predict(X_unlabeled)
+                    
+                    llm_calls = 0
+                    max_llm_calls = 20 # Giới hạn gọi LLM để tránh treo máy
+                    
+                    for i, idx in enumerate(df_unlabeled.index):
+                        confidence = float(max(probs[i]))
+                        
+                        if confidence >= 0.7:
+                            df_full.at[idx, 'category'] = preds[i]
+                        else:
+                            if llm_calls < max_llm_calls:
+                                print(f"    ⏳ Xin nhãn từ LLM cho vé {df_full.at[idx, 'id']} (Độ tự tin: {confidence:.2f})...")
+                                prompt = f"Phân loại nội dung sau vào đúng MỘT trong 5 danh mục: {', '.join(categories)}.\nNội dung: '{df_full.at[idx, 'email_content']}'\n\nYÊU CẦU: CHỈ xuất ra ĐÚNG 1 TỪ/CỤM TỪ là tên danh mục, TUYỆT ĐỐI KHÔNG giải thích gì thêm."
+                                try:
+                                    label = chat_completion(prompt, temperature=0.1).strip()
+                                    df_full.at[idx, 'category'] = label
+                                    print(f"      -> LLM chọn: {label}")
+                                    llm_calls += 1
+                                except Exception as e:
+                                    print(f"      -> Lỗi gọi LLM: {e}")
+                                    df_full.at[idx, 'category'] = preds[i] # Fallback to SVM
+                            else:
+                                df_full.at[idx, 'category'] = preds[i]
+                                
+                    if llm_calls >= max_llm_calls:
+                        print(f"⚠️ Đã đạt giới hạn {max_llm_calls} lần gọi LLM. Các vé còn lại được ép dùng SVM để tiết kiệm thời gian.")
+                    # Không ghi đè file gốc: lưu bản đã dán nhãn vào archive
+                    labeled_path = self.archive_dir / f"labeled_{timestamp}.csv"
+                    df_full.drop(columns=['processed_content']).to_csv(labeled_path, index=False)
+                    print(f"✅ Đã dán nhãn xong toàn bộ dữ liệu. Lưu tại: {labeled_path}")
+
+                print(f"🎓 Bước 3: Train lại mô hình SVM 'trùm cuối' trên toàn bộ {len(df_full)} mẫu...")
+                df_final = df_full.dropna(subset=['category', 'email_content'])
+                X_final = self.vectorizer.fit_transform(df_final['processed_content'])
+                y_final = df_final['category']
+                
+                self.model.fit(X_final, y_final)
                 self.is_trained = True
+                
+                # Save new version
+                new_model_path = str(version_dir / "svm_model.joblib")
+                new_vec_path = str(version_dir / "tfidf_vectorizer.joblib")
+                joblib.dump(self.model, new_model_path)
+                joblib.dump(self.vectorizer, new_vec_path)
+                
+                acc = self._holdout_accuracy(df_final, df_labeled.index)
+                
+                meta = {"active_version": version_id, "versions": {}}
+                if self.metadata_path.exists():
+                    try:
+                        with open(self.metadata_path, "r") as f:
+                            meta = json.load(f)
+                    except: pass
+                if "versions" not in meta: meta["versions"] = {}
+                meta["versions"][version_id] = {
+                    "created_at": datetime.datetime.now().isoformat(),
+                    "model_path": new_model_path,
+                    "vectorizer_path": new_vec_path,
+                    "archive_data_path": str(archive_path),
+                    "training_rows": len(df_final),
+                    "accuracy": acc
+                }
+                meta["active_version"] = version_id
+                with open(self.metadata_path, "w") as f:
+                    json.dump(meta, f, indent=4)
+                    
+                self.model_path = new_model_path
+                self.vectorizer_path = new_vec_path
+                self.active_version = version_id
+                print(f"🏆 Quá trình Active Learning hoàn tất! Đã lưu phiên bản: {version_id}")
             else:
                 print("⚠️ Missing required columns for training ML Classifier.")
         except Exception as e:
@@ -52,7 +318,14 @@ class MLClassifier:
         if not self.is_trained or not text.strip():
             return "General Inquiry", 0.0, {}
             
-        X_new = self.vectorizer.transform([text])
+        # Bước 1: Tiền xử lý (Preprocessing) trước khi dự đoán
+        processed_text = self._preprocess_text(text)
+        print(f"Debug - Original: {text}\nDebug - Processed: {processed_text}")
+        
+        if not processed_text:
+            return "General Inquiry", 0.0, {}
+            
+        X_new = self.vectorizer.transform([processed_text])
         
         # 1. Get the probabilities for all categories
         probs = self.model.predict_proba(X_new)[0]
@@ -62,6 +335,9 @@ class MLClassifier:
         
         # 3. Identify the predicted category
         prediction = self.model.predict(X_new)[0]
+
+        # Bước 3: In ra kết quả dự đoán và xác suất lớn nhất
+        print(f"Debug - Pred: {prediction}, Proba: {confidence}")
 
         # 4. Map probabilities to category names
         prob_dict = {str(self.model.classes_[i]): float(probs[i]) for i in range(len(probs))}
@@ -167,18 +443,17 @@ class TicketProcessor:
                 }
             )
 
-        is_valid = bool(routing_results) and all(
-            result["valid"] for result in routing_results
-        )
+        # Route on the ML category; keyword tags only cross-check it (no tags = no conflict)
+        category = ticket.get("category")
+        known_category = category in department_rules
+        is_valid = known_category and (not tags or category in tags)
 
         return {
             "valid": is_valid,
             "requires_human_review": not is_valid or low_confidence,
             "low_confidence": low_confidence,
             "routing": routing_results,
-            "recommended_department": routing_results[0]["department"]
-            if is_valid
-            else None,
+            "recommended_department": category if known_category else None,
             "priority": priority_mapping.get(ticket.get("sentiment"), "Medium"),
         }
 
@@ -253,7 +528,12 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
         processed["category_probabilities"] = prob_dict
 
         processed["category"] = predicted_category
-        processed["original_csv_category"] = ticket.get("category", "")
+        
+        # Sửa lỗi hiển thị "(Changed from nan)" trên UI
+        orig_cat = ticket.get("category", "")
+        if pd.isna(orig_cat):
+            orig_cat = ""
+        processed["original_csv_category"] = orig_cat
         
         processed["sentiment"] = self.analyze_sentiment(email_content)
         processed["tags"] = self.assign_tags(email_content)
@@ -283,3 +563,12 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
     def _keyword_matches(text: str, keyword: str) -> bool:
         """Check if keyword appears in text (supports multi-word phrases)."""
         return bool(re.search(rf"\b{re.escape(keyword)}\b", text))
+
+def train_new_model_background(file_path: str):
+    """Chạy background để train mô hình mới không gây treo UI"""
+    try:
+        print(f"🚀 Background Training started for data: {file_path}")
+        classifier = MLClassifier(training_data_path=file_path, force_retrain=True)
+        print("✅ Background Training completed successfully!")
+    except Exception as e:
+        print(f"❌ Background Training failed: {e}")
