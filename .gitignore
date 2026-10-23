@@ -16,3 +16,5 @@ dist/
 
 # Streamlit
 .streamlit/
+# Raw Bitext download (rebuild tickets.csv with convert_bitext.py)
+/data/bitext/
