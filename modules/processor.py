@@ -397,16 +397,13 @@ class TicketProcessor:
         sentiment_config = self.policy.get("sentiment_thresholds", {})
         critical_keywords = sentiment_config.get("critical_keywords", [])
 
-        if any(keyword in text_lower for keyword in critical_keywords):
+        negative_keywords = critical_keywords + sentiment_config.get("negative_keywords", [])
+        if any(self._keyword_matches(text_lower, keyword) for keyword in negative_keywords):
             return "Negative"
 
-        department_keywords = [
-            keyword
-            for keywords in self.policy.get("department_rules", {}).values()
-            for keyword in keywords
-        ]
-        if any(self._keyword_matches(text_lower, keyword) for keyword in department_keywords):
-            return "Negative"
+        positive_keywords = sentiment_config.get("positive_keywords", [])
+        if any(self._keyword_matches(text_lower, keyword) for keyword in positive_keywords):
+            return "Positive"
 
         return "Neutral"
 

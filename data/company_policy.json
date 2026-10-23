@@ -32,6 +32,15 @@
   },
   "sentiment_thresholds": {
     "critical_keywords": ["legal action", "lawsuit", "unacceptable", "terrible", "worst"],
+    "negative_keywords": [
+      "frustrating", "frustrated", "angry", "ridiculous", "disappointed", "awful", "horrible",
+      "still waiting", "fed up", "useless", "scam", "never again", "asap", "immediately",
+      "kiện", "tệ", "bực mình", "thất vọng", "quá đáng", "vô lý", "lừa đảo", "gấp", "ngay"
+    ],
+    "positive_keywords": [
+      "thank you", "thanks", "great", "love", "awesome", "appreciate", "excellent",
+      "cảm ơn", "tuyệt vời", "hài lòng", "rất thích"
+    ],
     "priority_mapping": {
       "Negative": "High",
       "Neutral": "Medium",

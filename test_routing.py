@@ -36,3 +36,19 @@ r = check("Nonsense", "refund please")
 assert r["requires_human_review"] and r["recommended_department"] is None, r
 
 print("✅ validate_routing checks passed")
+
+# Sentiment: a department keyword alone is not negative
+for text, want in [
+    ("I want a refund for my invoice", "Neutral"),
+    ("The website is slow", "Neutral"),
+    ("Still waiting for my refund. Ridiculous.", "Negative"),
+    ("I will take legal action", "Negative"),
+    ("Bực mình quá, app cứ bị văng", "Negative"),
+    ("Thanks, the delivery was great", "Positive"),
+    ("Cảm ơn bạn nhiều", "Positive"),
+    ("Đơn hàng của tôi đang ở đâu?", "Neutral"),
+]:
+    got = p.analyze_sentiment(text)
+    assert got == want, (text, got)
+
+print("✅ analyze_sentiment checks passed")
