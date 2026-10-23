@@ -1,15 +1,15 @@
 # AI-Driven Ticket Routing System
 
 ## Overview
-The **AI-Driven Ticket Routing System** is an intelligent automation pipeline designed to modernize customer support. By leveraging Natural Language Processing (NLP) and a dynamic business rules engine, this system eliminates manual triage, reduces response times, and ensures that critical customer issues never fall through the cracks.
+This AI-Driven Ticket Routing System modernizes support by replacing manual triage with an automated NLP pipeline. It categorizes tickets using machine learning and routes them based on real-time confidence. Ambiguous cases move to a Human Intervention Panel, ensuring operational efficiency, lower latency, and improved CSAT scores for your support team.
 
 ## Project Goal
 To replace inefficient, manual ticket routing with an automated, AI-driven pipeline, thereby eliminating human error and significantly decreasing ticket resolution latency.
 
 ## Expected Business Results
-* **For Support Agents**: A drastic reduction in manual triage time, allowing them to focus on resolving complex issues rather than sorting them.
-* **For Customer Success**: Higher Customer Satisfaction (CSAT) scores driven by faster, more accurate ticket routing.
-* **For Management**: Optimized operational costs through increased efficiency and reduced overhead in the support department.
+* **For Support Agents**: A drastic reduction in manual triage time.
+* **For Customer Success**: Higher CSAT scores driven by faster, accurate routing.
+* **For Management**: Optimized operational costs through increased efficiency.
 
 ## 🌟 Key Features
 * **Intelligent Categorization**: A calibrated linear SVM (`LinearSVC` + `CalibratedClassifierCV`) on TF-IDF 1–2-grams routes tickets to seven departments: *Account Management, Billing, General Inquiry, Logistics, Returns, Sales and Technical.* Vietnamese text is word-segmented with `underthesea`.
@@ -19,15 +19,33 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Semi-supervised Training & Versioning**: Unlabelled tickets are labelled by the SVM, or by the LLM when the SVM is unsure (max 20 calls, answers validated against known departments). Each training run is saved as a version in `models/`, with accuracy measured on a held-out 20% of real labels.
 * **AI Reply Drafts**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies.
 
+## 🔄 The Pipeline
+1. **Ingestion**: Tickets are loaded from `data/tickets.csv`.
+2. **ML Analysis**: Text is preprocessed, vectorized with TF-IDF and classified by the SVM.
+3. **Policy Validation**: Department keywords from `company_policy.json` cross-check the predicted department and set priority.
+4. **Confidence Check**: Confidence < 0.65 or a keyword conflict flags the ticket for **Human Intervention**.
+5. **Review & Draft**: Agents use the **Streamlit UI** to verify, correct, or draft responses.
+6. **Learn**: Corrections are merged into the training data on the next retrain.
+
 ## 📊 Data
 `data/tickets.csv` holds ~3,700 labelled tickets (~520 per department): Bitext tickets from the [Bitext customer support dataset](https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset), 250 generated English/Vietnamese Technical tickets (bugs, crashes, slow loading, errors) that Bitext lacks, and 210 original English/Vietnamese tickets. To rebuild it, download the Bitext CSV to `data/bitext/bitext_27k.csv` and run `python convert_bitext.py`. The intent → department mapping and the Technical templates are at the top of that script.
 
 Known gaps: Bitext and the Technical tickets are template-based, so held-out accuracy (~99%) overstates real-world accuracy, and Vietnamese is thin outside Technical.
 
+## 🏗 Project Structure
+* `modules/`: Core logic (`processor.py`, `feedback_manager.py`, `llm_client.py`, `vector_store.py`, `embeddings.py`).
+* `data/`: Datasets, `company_policy.json` and `corrections.json`.
+* `models/`: Versioned trained models and `metadata.json`.
+* `ui.py`: Streamlit-based agent dashboard.
+* `convert_bitext.py`: Builds `data/tickets.csv`.
+
 ## 🛠 Getting Started
 1. **Environment Setup**: `pip install -r requirements.txt`.
 2. **Configure**: Edit departments and keywords in `data/company_policy.json`, and set the `LLM_*` environment variables for reply drafts and auto-labelling.
-3. **Launch**: `streamlit run ui.py`. The first start trains a model if none exists.
+3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists.
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance automation against human review volume.
 6. **Check**: `python test_routing.py` runs the routing self-check.
+
+---
+*If you found this helpful or have suggestions, please open an issue or start a discussion!*
