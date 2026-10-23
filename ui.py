@@ -88,14 +88,21 @@ def ticket_actions_fragment(ticket, processor, feedback_mgr, selected_id):
     with st.container():
         col_a, col_b = st.columns(2)
         with col_a:
-            new_dept = st.text_input("Correct Department (If AI is wrong):", key=f"new_dept_{selected_id}")
+            departments = list(processor.policy.get("department_rules", {}))
+            current = ticket.get('category')
+            new_dept = st.selectbox(
+                "Correct Department (If AI is wrong):",
+                departments,
+                index=departments.index(current) if current in departments else None,
+                key=f"new_dept_{selected_id}",
+            )
             reason = st.text_area("Reason for Change:", key=f"reason_{selected_id}")
         with col_b:
             if st.button("Save Correction & Route", key=f"save_correction_{selected_id}"):
-                if not new_dept.strip():
-                    st.error("Please enter the correct department.")
+                if not new_dept:
+                    st.error("Please select the correct department.")
                 else:
-                    feedback_mgr.save_correction(selected_id, ticket.get('category', ''), new_dept.strip(), reason, ticket['email_content'])
+                    feedback_mgr.save_correction(selected_id, ticket.get('category', ''), new_dept, reason, ticket['email_content'])
                     st.success("Correction saved. It applies now and will be learned on the next retrain (Admin Dashboard).")
 
 # ==========================================

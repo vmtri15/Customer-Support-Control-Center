@@ -160,12 +160,26 @@ class MLClassifier:
             print(f"🧑‍🏫 Áp dụng {applied} chỉnh sửa, thêm {len(new_rows)} vé từ corrections.json")
         return df
 
+    def _build_model(self, y: pd.Series) -> CalibratedClassifierCV:
+        """Calibrated SVM; số fold tự giảm khi có lớp ít mẫu (cv=5 cần ≥5 vé mỗi lớp)."""
+        cv = max(2, min(5, int(y.value_counts().min())))
+        base_svm = LinearSVC(class_weight='balanced', max_iter=2000)
+        return CalibratedClassifierCV(estimator=base_svm, cv=cv, method='sigmoid')
+
+    def _drop_rare_classes(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Bỏ danh mục chỉ có 1 vé: không thể cross-validate để calibrate."""
+        counts = df['category'].value_counts()
+        rare = counts[counts < 2].index.tolist()
+        if rare:
+            print(f"⚠️ Bỏ qua danh mục chỉ có 1 vé (cần ≥2): {rare}")
+            df = df[~df['category'].isin(rare)]
+        return df
+
     def _holdout_accuracy(self, df_final: pd.DataFrame, labeled_index) -> float | None:
         """
         Accuracy trên 20% vé có nhãn thật (gốc + chỉnh sửa của người), giữ lại không train.
         Không chấm trên nhãn do SVM/LLM tự gán vì mô hình sẽ dễ dàng đoán đúng nhãn của chính nó.
         """
-        from sklearn.base import clone
         from sklearn.metrics import accuracy_score
         from sklearn.model_selection import train_test_split
 
@@ -177,7 +191,7 @@ class MLClassifier:
             df_train = df_final.drop(index=test_idx)
             df_test = df_final.loc[test_idx]
             vec = TfidfVectorizer(ngram_range=(1, 2))
-            model = clone(self.model)
+            model = self._build_model(df_train['category'])
             model.fit(vec.fit_transform(df_train['processed_content']), df_train['category'])
             preds = model.predict(vec.transform(df_test['processed_content']))
             acc = float(accuracy_score(df_test['category'], preds))
@@ -214,20 +228,19 @@ class MLClassifier:
                 
                 # Chia tập dữ liệu có nhãn và không có nhãn
                 labeled_mask = df_full['category'].notna() & (df_full['category'].astype(str).str.strip() != "")
-                df_labeled = df_full[labeled_mask]
+                df_labeled = self._drop_rare_classes(df_full[labeled_mask])
                 df_unlabeled = df_full[~labeled_mask]
 
-                if len(df_labeled) < 2:
-                    print("⚠️ LỖI: Cần ít nhất vài vé có nhãn ban đầu để làm seed data cho SVM.")
+                if df_labeled['category'].nunique() < 2:
+                    print("⚠️ LỖI: Cần ít nhất 2 danh mục, mỗi danh mục ≥2 vé có nhãn để làm seed data cho SVM.")
                     self.is_trained = False
                     return
-                
+
                 print(f"🚀 Bước 1: Train SVM ban đầu trên {len(df_labeled)} mẫu có sẵn.")
                 X_labeled = self.vectorizer.fit_transform(df_labeled['processed_content'])
                 y_labeled = df_labeled['category']
-                
-                base_initial_svm = LinearSVC(class_weight='balanced', max_iter=2000)
-                initial_model = CalibratedClassifierCV(estimator=base_initial_svm, cv=5, method='sigmoid')
+
+                initial_model = self._build_model(y_labeled)
                 initial_model.fit(X_labeled, y_labeled)
                 
                 if len(df_unlabeled) > 0:
@@ -270,10 +283,11 @@ class MLClassifier:
                     print(f"✅ Đã dán nhãn xong toàn bộ dữ liệu. Lưu tại: {labeled_path}")
 
                 print(f"🎓 Bước 3: Train lại mô hình SVM 'trùm cuối' trên toàn bộ {len(df_full)} mẫu...")
-                df_final = df_full.dropna(subset=['category', 'email_content'])
+                df_final = self._drop_rare_classes(df_full.dropna(subset=['category', 'email_content']))
                 X_final = self.vectorizer.fit_transform(df_final['processed_content'])
                 y_final = df_final['category']
-                
+
+                self.model = self._build_model(y_final)
                 self.model.fit(X_final, y_final)
                 self.is_trained = True
                 
