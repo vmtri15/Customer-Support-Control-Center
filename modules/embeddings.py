@@ -23,8 +23,13 @@ def get_embedding_function():
         from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
         os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "600")
-        _embedding_function = SentenceTransformerEmbeddingFunction(
-            model_name=EMBEDDING_MODEL
-        )
+        try:
+            # Cached copy first: no network call, so a slow/unreachable Hugging Face can't hang the app
+            _embedding_function = SentenceTransformerEmbeddingFunction(
+                model_name=EMBEDDING_MODEL, local_files_only=True
+            )
+        except Exception:
+            print(f"📥 Embedding model not cached yet, downloading {EMBEDDING_MODEL}...")
+            _embedding_function = SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
 
     return _embedding_function

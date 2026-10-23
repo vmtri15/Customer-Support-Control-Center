@@ -17,7 +17,7 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Dynamic Prioritization**: Keyword-based sentiment analysis flags critical tickets (e.g. legal threats) as High priority.
 * **Human-in-the-Loop (HITL)**: Agents correct the department from a dropdown. Corrections apply immediately in the UI and are merged into the training data on the next retrain.
 * **Semi-supervised Training & Versioning**: Unlabelled tickets are labelled by the SVM, or by the LLM when the SVM is unsure (max 20 calls, answers validated against known departments). Each training run is saved as a version in `models/`, with accuracy measured on a held-out 20% of real labels.
-* **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft and **Mark as Sent**, which logs it to `data/sent_replies.json` (email sending is not connected yet).
+* **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft, enter the customer's address and click **Send to Customer**, which emails it via SMTP and logs it to `data/sent_replies.json`. Without SMTP settings the button becomes **Mark as Sent** and only logs the reply.
 * **Vector DB (ChromaDB)**: Tickets are embedded with `all-MiniLM-L6-v2`. Agents can **Show similar past tickets**, and low-confidence tickets that closely match (≥85% similar) a human correction are routed like it immediately, before any retrain. The index rebuilds automatically when `data/tickets.csv` changes.
 
 ## 🔄 The Pipeline
@@ -43,7 +43,12 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 
 ## 🛠 Getting Started
 1. **Environment Setup**: `pip install -r requirements.txt`.
-2. **Configure**: Edit departments and keywords in `data/company_policy.json`, and set the `LLM_*` environment variables for reply drafts and auto-labelling.
+2. **Configure**: Edit departments and keywords in `data/company_policy.json`, and set the `LLM_*` environment variables for reply drafts and auto-labelling. To send replies by email, also set the SMTP variables (works with Gmail/Outlook app passwords, SendGrid, Mailgun or any SMTP relay):
+   ```bash
+   export SMTP_HOST=smtp.gmail.com SMTP_PORT=587 SMTP_FROM=support@yourcompany.com
+   export SMTP_USER=support@yourcompany.com SMTP_PASSWORD='your-app-password'
+   ```
+   Port 465 uses SSL; other ports use STARTTLS unless `SMTP_STARTTLS=false`.
 3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists.
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance automation against human review volume.

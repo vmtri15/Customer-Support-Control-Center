@@ -43,12 +43,15 @@ class FeedbackManager:
 
         print(f"✅ Feedback logged for Ticket {ticket_id}: Successfully re-routed to {corrected_dept}")
 
-    def log_reply(self, ticket_id: str, reply: str, replies_path: str | Path = "data/sent_replies.json") -> None:
-        """Append the agent-approved reply (as edited) to the sent-replies log."""
+    def log_reply(self, ticket_id: str, reply: str, to: str | None = None, status: str = "logged",
+                  replies_path: str | Path = "data/sent_replies.json") -> None:
+        """Append the agent-approved reply (as edited) to the sent-replies log. status: 'sent' or 'logged'."""
         replies_path = Path(replies_path)
         replies = json.loads(replies_path.read_text(encoding="utf-8")) if replies_path.exists() else []
         replies.append({
             "ticket_id": ticket_id,
+            "to": to,
+            "status": status,
             "reply": reply,
             "sent_at": datetime.datetime.now().isoformat(timespec="seconds"),
         })

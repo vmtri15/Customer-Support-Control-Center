@@ -7,6 +7,7 @@ import plotly.express as px
 from modules.processor import TicketProcessor, CONFIDENCE_THRESHOLD
 from modules.processor import train_new_model_background, is_training
 from modules.feedback_manager import FeedbackManager
+from modules.email_sender import smtp_configured, split_subject, send_email
 
 st.set_page_config(page_title="Enterprise AI Ticket Router", layout="wide", page_icon="🚀")
 
@@ -81,12 +82,28 @@ def ticket_actions_fragment(ticket, processor, feedback_mgr, selected_id):
     # Display the editable text area if a draft exists
     if st.session_state[draft_key]:
         edited_reply = st.text_area("Review and edit before sending:", value=st.session_state[draft_key], height=250, key=edit_key)
-        # ponytail: chưa nối SMTP/helpdesk; chỉ ghi lại bản phản hồi đã duyệt. Nối gửi email thật tại đây.
-        if st.button("Mark as Sent", key=f"send_draft_{selected_id}"):
-            feedback_mgr.log_reply(selected_id, edited_reply)
-            st.success("Reply logged to data/sent_replies.json (email sending is not connected yet).")
-            st.session_state[draft_key] = ""
-            st.session_state.pop(edit_key, None)
+        to_addr = st.text_input("To:", value=ticket.get("customer_email") or "", key=f"to_{selected_id}").strip()
+
+        configured = smtp_configured()
+        if not configured:
+            st.caption("SMTP is not configured (set SMTP_HOST, SMTP_FROM, ...); the reply will only be logged.")
+        if st.button("Send to Customer" if configured else "Mark as Sent", key=f"send_draft_{selected_id}"):
+            if configured:
+                subject, body = split_subject(edited_reply, selected_id)
+                try:
+                    send_email(to_addr, subject, body)
+                except Exception as e:
+                    st.error(f"Email not sent: {e}")
+                else:
+                    feedback_mgr.log_reply(selected_id, edited_reply, to=to_addr, status="sent")
+                    st.success(f"Email sent to {to_addr}.")
+                    st.session_state[draft_key] = ""
+                    st.session_state.pop(edit_key, None)
+            else:
+                feedback_mgr.log_reply(selected_id, edited_reply, to=to_addr or None, status="logged")
+                st.success("Reply logged to data/sent_replies.json (not emailed).")
+                st.session_state[draft_key] = ""
+                st.session_state.pop(edit_key, None)
 
     # --- KHU VỰC HUMAN-IN-THE-LOOP ---
     st.subheader("Human Intervention Panel")

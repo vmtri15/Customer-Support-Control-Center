@@ -101,4 +101,35 @@ with patch.object(p.classifier, "predict_many", return_value=[("Billing", 0.3, {
 assert out[0]["category"] == "Logistics" and out[0]["routed_by_correction"]["ticket_id"] == "T0", out[0]
 assert out[1]["category"] == "Billing" and "routed_by_correction" not in out[1]
 print("✅ low-confidence tickets follow similar corrections")
+
+# --- Email sending (SMTP mocked: nothing is really sent) ---
+from modules import email_sender  # noqa: E402
+
+assert email_sender.split_subject("SUBJECT: Update - Ref: T1\n\nHi A,\nBody", "T1") == ("Update - Ref: T1", "Hi A,\nBody")
+assert email_sender.split_subject("Hi A, no subject line", "T1")[0] == "Re: your support request - Ref: T1"
+for bad in ["", "not-an-email", "a@b", "x@y.com\nBcc: evil@z.com"]:
+    assert not email_sender.is_valid_address(bad), bad
+
+env = {"SMTP_HOST": "smtp.example.com", "SMTP_PORT": "587", "SMTP_FROM": "support@example.com",
+       "SMTP_USER": "support@example.com", "SMTP_PASSWORD": "test-only"}
+with patch.dict(os.environ, env, clear=False), patch("smtplib.SMTP") as smtp:
+    assert email_sender.smtp_configured()
+    email_sender.send_email("customer@example.com", "Update - Ref: T1", "Hi A,\nBody")
+    server = smtp.return_value
+    server.starttls.assert_called_once()
+    server.login.assert_called_once_with("support@example.com", "test-only")
+    msg = server.send_message.call_args.args[0]
+    assert msg["To"] == "customer@example.com" and msg["Subject"] == "Update - Ref: T1"
+    assert "Body" in msg.get_content()
+    try:
+        email_sender.send_email("not-an-email", "s", "b")
+        raise AssertionError("invalid address must be rejected")
+    except ValueError:
+        pass
+    assert server.send_message.call_count == 1
+with patch.dict(os.environ, {**env, "SMTP_PORT": "465"}), patch("smtplib.SMTP_SSL") as smtp_ssl:
+    email_sender.send_email("customer@example.com", "s", "b")
+    smtp_ssl.return_value.send_message.assert_called_once()
+    smtp_ssl.return_value.starttls.assert_not_called()
+print("✅ email sending")
 print("✅ all feature checks passed")
