@@ -589,15 +589,19 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
         if not self.tickets:
             self.load_tickets()
 
-        if not self.tickets:
+        return self.process_many(self.tickets)
+
+    def process_many(self, tickets: list[dict]) -> list[dict]:
+        """Classify tickets in one batch; low-confidence ones may follow a similar human correction."""
+        if not tickets:
             return []
 
-        texts = [t.get("email_content") if isinstance(t.get("email_content"), str) else "" for t in self.tickets]
+        texts = [t.get("email_content") if isinstance(t.get("email_content"), str) else "" for t in tickets]
         predictions = self.classifier.predict_many(texts)
-        matches = self._follow_similar_corrections(texts, [t.get("id") for t in self.tickets], predictions)
+        matches = self._follow_similar_corrections(texts, [t.get("id") for t in tickets], predictions)
 
         processed = []
-        for i, (ticket, prediction) in enumerate(zip(self.tickets, predictions)):
+        for i, (ticket, prediction) in enumerate(zip(tickets, predictions)):
             p = self.process_ticket(ticket, prediction)
             if i in matches:
                 p["routed_by_correction"] = matches[i]

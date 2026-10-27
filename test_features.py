@@ -44,8 +44,6 @@ fm = FeedbackManager("data/corrections.json")
 assert fm.latest_by_ticket()["T0"]["corrected_department"] == "Logistics", "later correction must win"
 assert fm.calculate_kpi(10)["human_interventions"] == 2, "re-corrections count once"
 assert fm.calculate_kpi(10, ticket_ids=["T0", "T1"])["human_interventions"] == 1, "unknown tickets ignored"
-fm.log_reply("T1", "edited reply", replies_path="data/sent_replies.json")
-assert json.load(open("data/sent_replies.json"))[0]["reply"] == "edited reply"
 print("✅ FeedbackManager")
 
 # --- Training ---

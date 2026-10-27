@@ -15,7 +15,7 @@ dist/
 /models/
 /data/archive/
 /data/uploaded_train_*
-/data/sent_replies.json
+/data/support.db*
 
 # Vector DB (rebuilt automatically from data/tickets.csv; or run build_vectordb.py)
 /chroma_db/

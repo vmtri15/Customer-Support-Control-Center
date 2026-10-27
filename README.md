@@ -17,15 +17,15 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Dynamic Prioritization**: Keyword-based sentiment analysis flags critical tickets (e.g. legal threats) as High priority.
 * **Human-in-the-Loop (HITL)**: Agents correct the department from a dropdown. Corrections apply immediately in the UI and are merged into the training data on the next retrain.
 * **Semi-supervised Training & Versioning**: Unlabelled tickets are labelled by the SVM, or by the LLM when the SVM is unsure (max 20 calls, answers validated against known departments). Each training run is saved as a version in `models/`, with accuracy measured on a held-out 20% of real labels.
-* **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft, enter the customer's address and click **Send to Customer**, which emails it via SMTP and logs it to `data/sent_replies.json`. Without SMTP settings the button becomes **Mark as Sent** and only logs the reply.
+* **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft and send it: it is added to the ticket's conversation and, when SMTP is configured and an address is given, emailed to the customer.
 * **Vector DB (ChromaDB)**: Tickets are embedded with `all-MiniLM-L6-v2`. Agents can **Show similar past tickets**, and low-confidence tickets that closely match (≥85% similar) a human correction are routed like it immediately, before any retrain. The index rebuilds automatically when `data/tickets.csv` changes.
 
 ## 🔄 The Pipeline
-1. **Ingestion**: Tickets are loaded from `data/tickets.csv`.
+1. **Ingestion**: Tickets are stored in SQLite (`data/support.db`), seeded on first run from `data/tickets.csv`.
 2. **ML Analysis**: Text is preprocessed, vectorized with TF-IDF and classified by the SVM.
 3. **Policy Validation**: Department keywords from `company_policy.json` cross-check the predicted department and set priority.
 4. **Confidence Check**: Confidence < 0.65 or a keyword conflict flags the ticket for **Human Intervention**.
-5. **Review & Draft**: Agents use the **Streamlit UI** to verify, correct, or draft responses.
+5. **Work the queue**: In the **Agent Console**, agents pick tickets from priority-sorted queues, assign them, reply in the conversation thread (AI drafts available), change status (Open → In Progress → Waiting on Customer → Resolved) and confirm or correct the department. Every change is written to the ticket's activity log.
 6. **Learn**: Corrections are merged into the training data on the next retrain.
 
 ## 📊 Data
@@ -37,7 +37,8 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 * `modules/`: Core logic (`processor.py`, `feedback_manager.py`, `llm_client.py`, `vector_store.py`, `embeddings.py`).
 * `data/`: Datasets, `company_policy.json` and `corrections.json`.
 * `models/`: Versioned trained models and `metadata.json`.
-* `ui.py`: Streamlit-based agent dashboard.
+* `ui.py` + `app_pages/`: Streamlit multipage app (Agent Console, Analytics, Admin).
+* `modules/store.py`: SQLite ticket store (tickets, messages, events, agents).
 * `convert_bitext.py`: Builds `data/tickets.csv` (including Bitext agent replies for RAG).
 * `build_vectordb.py`: Rebuilds the ChromaDB index manually.
 
@@ -49,10 +50,10 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
    export SMTP_USER=support@yourcompany.com SMTP_PASSWORD='your-app-password'
    ```
    Port 465 uses SSL; other ports use STARTTLS unless `SMTP_STARTTLS=false`.
-3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists.
+3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists and fills `data/support.db` with the triaged demo tickets (delete the file to reset the demo).
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance automation against human review volume.
-6. **Check**: `python test_routing.py` (routing and sentiment) and `python test_features.py` (training, feedback, Vector DB; runs in a temp folder).
+6. **Check**: `python test_routing.py` (routing and sentiment), `python test_store.py` (ticket store) and `python test_features.py` (training, feedback, Vector DB, email; runs in a temp folder).
 
 ---
 *If you found this helpful or have suggestions, please open an issue or start a discussion!*
