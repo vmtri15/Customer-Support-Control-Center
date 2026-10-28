@@ -1,5 +1,6 @@
 """Shared, cached objects for all Streamlit pages."""
 import json
+import os
 
 import streamlit as st
 
@@ -47,5 +48,20 @@ def triage(processor_: TicketProcessor, ticket_id: str, content: str, customer: 
 
 
 def current_agent() -> str:
-    agents = [a["name"] for a in store.list_agents()]
-    return st.sidebar.selectbox("Acting as", agents, key="acting_agent")
+    agent = st.session_state["agent"]  # ui.py only shows support-team pages after sign-in
+    st.sidebar.caption(f"Signed in as **{agent}**")
+    if st.sidebar.button("Sign out"):
+        del st.session_state["agent"]
+        st.rerun()
+    return agent
+
+
+# Abuse limits for a public demo; counted in the database, so reloading the page doesn't reset them
+LLM_DAILY_LIMIT = int(os.getenv("LLM_DAILY_LIMIT", "100"))
+TICKETS_PER_EMAIL_HOURLY = int(os.getenv("TICKETS_PER_EMAIL_HOURLY", "3"))
+TICKETS_HOURLY = int(os.getenv("TICKETS_HOURLY", "60"))
+MAX_MESSAGE_CHARS = 4000
+
+
+def llm_allowed() -> bool:
+    return store.llm_calls_since(24) < LLM_DAILY_LIMIT

@@ -389,3 +389,30 @@ def customer_verdict(ticket_id: str, solved: bool, db_path: str = DB_PATH) -> No
     else:
         add_message(ticket_id, "system", "Customer", "Customer said the AI answer did not solve the problem.", db_path)
         update_ticket(ticket_id, "Customer", db_path, status="Open", ai_outcome="escalated")
+
+
+def _since(hours: float) -> str:
+    return (datetime.datetime.now() - datetime.timedelta(hours=hours)).isoformat(timespec="seconds")
+
+
+def log_llm_call(ticket_id: str, actor: str, purpose: str, db_path: str = DB_PATH) -> None:
+    """Record an LLM call on the ticket's activity log; llm_calls_since() counts them for the daily cap."""
+    with connect(db_path) as conn:
+        conn.execute("INSERT INTO events (ticket_id, actor, type, detail, created_at) VALUES (?, ?, 'llm', ?, ?)",
+                     (ticket_id, actor, purpose, now()))
+
+
+def llm_calls_since(hours: float, db_path: str = DB_PATH) -> int:
+    with connect(db_path) as conn:
+        return conn.execute("SELECT COUNT(*) FROM events WHERE type = 'llm' AND created_at >= ?",
+                            (_since(hours),)).fetchone()[0]
+
+
+def web_tickets_since(hours: float, email: str | None = None, db_path: str = DB_PATH) -> int:
+    """Help Center submissions in the last `hours`, optionally from one email (case-insensitive)."""
+    sql, params = "SELECT COUNT(*) FROM tickets WHERE channel = 'web' AND created_at >= ?", [_since(hours)]
+    if email:
+        sql += " AND lower(customer_email) = ?"
+        params.append(email.strip().lower())
+    with connect(db_path) as conn:
+        return conn.execute(sql, params).fetchone()[0]

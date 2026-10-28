@@ -1,0 +1,24 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      # CPU-only torch keeps the install small (sentence-transformers would pull the CUDA build)
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r requirements.txt
+      - run: python test_store.py
+      - run: python test_routing.py
+      # Trains a tiny model and downloads the embedding model; LLM and SMTP are mocked
+      - run: python test_features.py

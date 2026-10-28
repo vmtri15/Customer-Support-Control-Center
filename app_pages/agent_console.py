@@ -111,6 +111,10 @@ def send_reply(tid: str, reply_key: str, to_key: str, wait_key: str) -> None:
 def draft_with_ai(t: dict, reply_key: str) -> None:
     draft_input = {"id": t["id"], "category": t["category"], "customer": t["customer_name"] or "Customer",
                    "email_content": t["content"], "sentiment": t["sentiment"], "priority": t["priority"]}
+    if not common.llm_allowed():
+        st.session_state.flash = ("warning", f"Daily AI limit reached ({common.LLM_DAILY_LIMIT} calls). Try again tomorrow.")
+        return
+    store.log_llm_call(t["id"], agent, "draft")
     try:
         st.session_state[reply_key] = processor.generate_email_draft(draft_input)
     except Exception as e:

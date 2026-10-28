@@ -1,4 +1,14 @@
-# AI-Driven Ticket Routing System
+# AI-Driven Customer Support Platform
+
+[![tests](https://github.com/vmtri15/Customer-Support-Control-Center/actions/workflows/tests.yml/badge.svg)](https://github.com/vmtri15/Customer-Support-Control-Center/actions/workflows/tests.yml)
+
+A complete support desk built with Streamlit: customers submit and track requests in a **Help Center**, an ML classifier routes every ticket to the right department, an **AI Solver** answers the easy ones (and the customer confirms it worked), and agents work the rest in an **Agent Console** with response-time targets, AI reply drafts and analytics.
+
+| Help Center (AI answer awaiting the customer's verdict) | Agent Console (priority queue, due times) |
+|---|---|
+| ![Help Center](docs/screenshots/help_center.png) | ![Agent Console](docs/screenshots/agent_console.png) |
+
+![Analytics](docs/screenshots/analytics.png)
 
 ## Overview
 This AI-Driven Ticket Routing System modernizes support by replacing manual triage with an automated NLP pipeline. It categorizes tickets using machine learning and routes them based on real-time confidence. Ambiguous cases move to a Human Intervention Panel, ensuring operational efficiency, lower latency, and improved CSAT scores for your support team.
@@ -11,7 +21,32 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **For Customer Success**: Higher CSAT scores driven by faster, accurate routing.
 * **For Management**: Optimized operational costs through increased efficiency.
 
+## 🧭 Architecture
+```mermaid
+flowchart LR
+    C([Customer]) -->|submit / track / reply / rate| HC[Help Center]
+    HC --> T[Triage: TF-IDF + calibrated SVM,<br/>policy keywords, sentiment]
+    T -->|confident, calm, not urgent| S[AI Solver]
+    S -->|grounded in similar past replies| V[(ChromaDB)]
+    S -->|answer| HC
+    S -->|ESCALATE / LLM down| Q
+    T -->|everything else| Q[Agent queues]
+    HC -->|"I still need help"| Q
+    A([Agent]) -->|sign in| AC[Agent Console]
+    AC --> Q
+    AC -->|AI draft| L[LLM]
+    S --> L
+    AC -->|correct department| F[corrections.json]
+    F -->|retrain| T
+    F -->|similar tickets follow corrections| V
+    DB[(SQLite: tickets, messages,<br/>activity log, agents)]
+    HC --- DB
+    AC --- DB
+    AN[Analytics] --- DB
+```
+
 ## 🌟 Key Features
+* **Help Center & Agent Console**: Customers submit requests and track them with ticket number + email; agents (behind a sign-in, optionally password-protected) work priority-sorted queues with assignment, statuses, a conversation thread and a full activity log.
 * **Intelligent Categorization**: A calibrated linear SVM (`LinearSVC` + `CalibratedClassifierCV`) on TF-IDF 1–2-grams routes tickets to seven departments: *Account Management, Billing, General Inquiry, Logistics, Returns, Sales and Technical.* Vietnamese text is word-segmented with `underthesea`.
 * **Precision Confidence Scoring**: Every prediction carries a calibrated probability. Tickets below the `0.65` confidence threshold, or where the department keywords in `company_policy.json` contradict the model, go to the **Human Intervention Panel**.
 * **Dynamic Prioritization**: Keyword-based sentiment analysis flags critical tickets (e.g. legal threats) as High priority.
@@ -36,6 +71,13 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 
 Known gaps: Bitext and the Technical tickets are template-based, so held-out accuracy (~99%) overstates real-world accuracy, and Vietnamese is thin outside Technical.
 
+## 🚀 Deploy (Streamlit Community Cloud)
+1. Push the repo to GitHub, then at [share.streamlit.io](https://share.streamlit.io) create an app from it with main file `ui.py` and Python 3.12.
+2. In the app's **Secrets**, paste the contents of [`.streamlit/secrets.toml.example`](.streamlit/secrets.toml.example) with your own LLM key (top-level secrets become environment variables). Leave out `AGENT_PASSWORD` for an open demo where visitors can sign in as any agent.
+3. The first boot trains the model, downloads the embedding model and seeds the demo database (a few minutes). The file system is not persistent, so the demo resets when the app restarts.
+
+**Public-demo limits** (counted in the database, so reloading the page doesn't reset them): `LLM_DAILY_LIMIT` LLM calls per 24 h across the AI Solver and agent drafts (default 100), `TICKETS_PER_EMAIL_HOURLY` (3) and `TICKETS_HOURLY` (60) Help Center submissions, and 4,000 characters per message. Every LLM call is written to the ticket's activity log.
+
 ## 🏗 Project Structure
 * `modules/`: Core logic (`processor.py`, `feedback_manager.py`, `llm_client.py`, `vector_store.py`, `embeddings.py`).
 * `data/`: Datasets, `company_policy.json` and `corrections.json`.
@@ -44,10 +86,13 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 * `modules/store.py`: SQLite ticket store (tickets, messages, events, agents).
 * `convert_bitext.py`: Builds `data/tickets.csv` (including Bitext agent replies for RAG).
 * `build_vectordb.py`: Rebuilds the ChromaDB index manually.
+* `auto_label.py`: Labels unlabelled tickets with the LLM.
+* `.github/workflows/tests.yml`: CI running the three test scripts on every push and pull request.
+* `docs/screenshots/`: README images.
 
 ## 🛠 Getting Started
 1. **Environment Setup**: `pip install -r requirements.txt`.
-2. **Configure**: Edit departments and keywords in `data/company_policy.json`, and set the `LLM_*` environment variables for reply drafts and auto-labelling. To send replies by email, also set the SMTP variables (works with Gmail/Outlook app passwords, SendGrid, Mailgun or any SMTP relay):
+2. **Configure**: Edit departments and keywords in `data/company_policy.json`, and set the `LLM_*` environment variables (or copy `.streamlit/secrets.toml.example` to `.streamlit/secrets.toml`) for the AI Solver, reply drafts and auto-labelling. Set `AGENT_PASSWORD` to require a password on the support-team pages. To send replies by email, also set the SMTP variables (works with Gmail/Outlook app passwords, SendGrid, Mailgun or any SMTP relay):
    ```bash
    export SMTP_HOST=smtp.gmail.com SMTP_PORT=587 SMTP_FROM=support@yourcompany.com
    export SMTP_USER=support@yourcompany.com SMTP_PASSWORD='your-app-password'
@@ -56,7 +101,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists and fills `data/support.db` with the triaged demo tickets, given a generated 30-day history (agent replies from the dataset, mostly on time, some late, some rated) so the metrics have something to show. Delete the file to reset the demo.
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` (human review) and `AUTO_SOLVE_CONFIDENCE` (AI Solver) in `modules/processor.py` to balance automation against human workload.
-6. **Check**: `python test_routing.py` (routing and sentiment), `python test_store.py` (ticket store) and `python test_features.py` (training, feedback, Vector DB, email; runs in a temp folder).
+6. **Check** (also run by CI): `python test_routing.py` (routing and sentiment), `python test_store.py` (ticket store) and `python test_features.py` (training, feedback, Vector DB, email; runs in a temp folder).
 
 ---
 *If you found this helpful or have suggestions, please open an issue or start a discussion!*

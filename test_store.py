@@ -146,6 +146,17 @@ for bad in [0, 6]:
     except ValueError:
         pass
 
+# Abuse-limit counters: LLM calls and Help Center submissions in a time window
+assert store.llm_calls_since(24, db) == 0
+store.log_llm_call(tid, "AI", "solver", db)
+store.log_llm_call("T1", "Sam Lee", "draft", db)
+assert store.llm_calls_since(24, db) == 2
+assert store.web_tickets_since(1, db_path=db) == 1  # only tid came in through the web
+assert store.web_tickets_since(1, "CY@EXAMPLE.COM", db) == 1 and store.web_tickets_since(1, "x@example.com", db) == 0
+with store.connect(db) as conn:  # an hour-old submission no longer counts
+    conn.execute("UPDATE tickets SET created_at = '2020-01-01T00:00:00' WHERE id = ?", (tid,))
+assert store.web_tickets_since(1, db_path=db) == 0
+
 # Databases created by an older version get the new columns
 old = os.path.join(tempfile.mkdtemp(), "old.db")
 with sqlite3.connect(old) as conn:

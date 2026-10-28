@@ -34,21 +34,25 @@ if view != VIEWS[1]:
         name = c1.text_input("Your name")
         email = c2.text_input("Email")
         subject = st.text_input("Subject")
-        content = st.text_area("How can we help?", height=150)
+        content = st.text_area("How can we help?", height=150, max_chars=common.MAX_MESSAGE_CHARS)
         submitted = st.form_submit_button("Submit request", type="primary")
     if submitted:
         if not (name.strip() and content.strip()):
             st.error("Please fill in your name and message.")
         elif not is_valid_address(email.strip()):
             st.error("Please enter a valid email address, so you can track your request.")
+        elif (store.web_tickets_since(1, email) >= common.TICKETS_PER_EMAIL_HOURLY
+              or store.web_tickets_since(1) >= common.TICKETS_HOURLY):
+            st.error("We've received a lot of requests in the last hour. Please try again later.")
         else:
             with st.spinner("Sending your request..."):
                 triage = common.triage(common.processor(), "new", content, name.strip())  # store assigns the id
                 ticket_id = store.create_ticket(name.strip(), email.strip(), subject.strip() or None, content,
                                                 triage, channel="web")
-            if auto_solvable(triage):
+            if auto_solvable(triage) and common.llm_allowed():
                 with st.spinner("Looking for an answer..."):
                     try:
+                        store.log_llm_call(ticket_id, "AI", "solver")
                         answer = common.processor().solve_ticket(
                             {"id": ticket_id, "email_content": content, "customer": name.strip(),
                              "category": triage["category"]})
@@ -116,7 +120,7 @@ else:
                 st.rerun()
 
         with st.form("customer_reply", clear_on_submit=True):
-            reply = st.text_area("Reply", height=100)
+            reply = st.text_area("Reply", height=100, max_chars=common.MAX_MESSAGE_CHARS)
             if st.form_submit_button("Send reply", type="primary"):
                 if reply.strip():
                     store.customer_reply(ticket["id"], reply)
