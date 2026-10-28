@@ -91,6 +91,22 @@ prompt = llm.call_args.args[0]
 assert "Nhân viên:" in prompt and "Billing reply" in prompt, prompt
 print("✅ find_similar + RAG prompt")
 
+# --- AI solver: grounded in sample replies, hands over on ESCALATE ---
+from modules.processor import auto_solvable  # noqa: E402
+
+sure = {"confidence": 0.9, "needs_review": 0, "priority": "Medium", "sentiment": "Neutral"}
+assert auto_solvable(sure)
+for unsure in [{"confidence": 0.7}, {"needs_review": 1}, {"priority": "High"}, {"sentiment": "Negative"}]:
+    assert not auto_solvable({**sure, **unsure}), unsure
+with patch("modules.llm_client.chat_completion", return_value="Hi A, here is how...") as llm:
+    assert p.solve_ticket(ticket) == "Hi A, here is how..."
+    assert "Billing reply" in llm.call_args.args[0]
+with patch("modules.llm_client.chat_completion", return_value="ESCALATE"):
+    assert p.solve_ticket(ticket) is None
+with patch.object(p, "reply_examples", return_value=""), patch("modules.llm_client.chat_completion") as llm:
+    assert p.solve_ticket(ticket) is None and not llm.called  # no grounding, no LLM call
+print("✅ AI solver")
+
 # A near-copy of T0's text with low confidence must follow T0's correction (Logistics)
 p.tickets = [{"id": "X1", "email_content": "Please refund my invoice payment now"},
              {"id": "X2", "email_content": "Totally unrelated question about store hours"}]

@@ -21,12 +21,18 @@ responded = df.dropna(subset=["first_response_at"])
 first_response_h = (pd.to_datetime(responded["first_response_at"]) - pd.to_datetime(responded["created_at"])).dt.total_seconds() / 3600
 kpi = feedback.calculate_kpi(total_processed=len(df), ticket_ids=df["id"].tolist())
 
-c1, c2, c3, c4, c5 = st.columns(5)
+ai = df["ai_outcome"].value_counts()
+ai_decided = ai.get("solved", 0) + ai.get("escalated", 0)
+
+c1, c2, c3, c4, c5, c6 = st.columns(6)
 c1.metric("Total tickets", len(df))
 c2.metric("Open", int(is_open.sum()))
 c3.metric("Resolved", int((df["status"] == "Resolved").sum()))
-c4.metric("Human corrections", kpi["human_interventions"], help=f"Routing accuracy: {kpi['routing_accuracy']}")
-c5.metric("Median first response", f"{first_response_h.median():.1f} h" if len(first_response_h) else "—")
+c4.metric("Corrections", kpi["human_interventions"], help=f"Routing accuracy: {kpi['routing_accuracy']}")
+c6.metric("AI solved", f"{ai.get('solved', 0) / ai_decided:.0%}" if ai_decided else "—",
+          help=f"Of AI-answered tickets the customer judged: {ai.get('solved', 0)} solved, "
+               f"{ai.get('escalated', 0)} needed an agent, {ai.get('pending', 0)} awaiting the customer.")
+c5.metric("Median 1st reply", f"{first_response_h.median():.1f} h" if len(first_response_h) else "—")
 
 st.divider()
 col1, col2 = st.columns(2)

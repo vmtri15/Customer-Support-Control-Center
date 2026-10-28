@@ -78,4 +78,32 @@ assert store.get_ticket(tid, db)["status"] == "Open"
 assert store.get_messages(tid, db)[-1]["author_type"] == "customer"
 assert store.get_events(tid, db)[-1]["actor"] == "Customer"
 
+# AI solver: answer -> customer verdict; replying instead of confirming counts as escalated
+store.ai_answer(tid, "Try reinstalling the app.", db)
+t = store.get_ticket(tid, db)
+assert t["status"] == "Waiting on Customer" and t["ai_outcome"] == "pending"
+store.customer_verdict(tid, solved=True, db_path=db)
+t = store.get_ticket(tid, db)
+assert t["status"] == "Resolved" and t["ai_outcome"] == "solved" and t["resolved_at"]
+store.ai_answer("T1", "Refund issued.", db)
+store.customer_verdict("T1", solved=False, db_path=db)
+assert store.get_ticket("T1", db)["status"] == "Open" and store.get_ticket("T1", db)["ai_outcome"] == "escalated"
+assert store.get_messages("T1", db)[-1]["author_type"] == "system"
+store.ai_answer("T2", "Tracking link sent.", db)
+store.customer_reply("T2", "That link is broken", db)
+assert store.get_ticket("T2", db)["ai_outcome"] == "escalated"
+try:
+    store.update_ticket("T1", "x", db_path=db, ai_outcome="maybe")
+    raise AssertionError("ai_outcome must be validated")
+except ValueError:
+    pass
+
+# Databases created before Phase 3 get the ai_outcome column
+old = os.path.join(tempfile.mkdtemp(), "old.db")
+with sqlite3.connect(old) as conn:
+    conn.executescript(store.SCHEMA.replace("    ai_outcome TEXT,\n", ""))
+store.init_db(old)
+with sqlite3.connect(old) as conn:
+    assert "ai_outcome" in {r[1] for r in conn.execute("PRAGMA table_info(tickets)")}
+
 print("✅ store checks passed")

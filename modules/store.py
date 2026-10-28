@@ -14,7 +14,9 @@ STATUSES = ["Open", "In Progress", "Waiting on Customer", "Resolved"]
 OPEN_STATUSES = STATUSES[:3]
 PRIORITIES = ["High", "Medium", "Low"]
 # Fields agents may change; each change is written to the events table
-EDITABLE_FIELDS = {"status", "assignee", "category", "priority", "needs_review", "human_reviewed"}
+EDITABLE_FIELDS = {"status", "assignee", "category", "priority", "needs_review", "human_reviewed", "ai_outcome"}
+# AI solver result: pending = answered, waiting for the customer's verdict
+AI_OUTCOMES = [None, "pending", "solved", "escalated"]
 
 DEMO_AGENTS = [
     ("Alex Kim", "Technical"), ("Sam Lee", "Billing"), ("Linh Tran", "Logistics"),
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     needs_review INTEGER NOT NULL DEFAULT 0,
     human_reviewed INTEGER NOT NULL DEFAULT 0,
     routed_by_correction TEXT,
+    ai_outcome TEXT,
     channel TEXT NOT NULL DEFAULT 'email',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
@@ -90,6 +93,8 @@ def init_db(db_path: str = DB_PATH) -> None:
     with connect(db_path) as conn:
         conn.execute("PRAGMA journal_mode = WAL")  # readers don't block the writer
         conn.executescript(SCHEMA)
+        if "ai_outcome" not in {r["name"] for r in conn.execute("PRAGMA table_info(tickets)")}:
+            conn.execute("ALTER TABLE tickets ADD COLUMN ai_outcome TEXT")  # databases from before Phase 3
         conn.executemany(
             "INSERT OR IGNORE INTO agents (name, email, department) VALUES (?, ?, ?)",
             [(name, f"{name.split()[0].lower()}@example.com", dept) for name, dept in DEMO_AGENTS],
@@ -251,6 +256,8 @@ def update_ticket(ticket_id: str, actor: str, db_path: str = DB_PATH, **fields) 
         raise ValueError(f"Fields not editable: {sorted(unknown)}")
     if "status" in fields and fields["status"] not in STATUSES:
         raise ValueError(f"Unknown status: {fields['status']}")
+    if "ai_outcome" in fields and fields["ai_outcome"] not in AI_OUTCOMES:
+        raise ValueError(f"Unknown AI outcome: {fields['ai_outcome']}")
     ts = now()
     with connect(db_path) as conn:
         row = conn.execute("SELECT * FROM tickets WHERE id = ?", (ticket_id,)).fetchone()
@@ -289,3 +296,20 @@ def customer_reply(ticket_id: str, body: str, db_path: str = DB_PATH) -> None:
     add_message(ticket_id, "customer", ticket["customer_name"], body, db_path)
     if ticket["status"] in ("Waiting on Customer", "Resolved"):
         update_ticket(ticket_id, "Customer", db_path, status="Open")
+    if ticket["ai_outcome"] == "pending":  # answering instead of confirming means the AI didn't solve it
+        update_ticket(ticket_id, "Customer", db_path, ai_outcome="escalated")
+
+
+def ai_answer(ticket_id: str, body: str, db_path: str = DB_PATH) -> None:
+    """Post the AI solver's answer and wait for the customer to confirm it solved the problem."""
+    add_message(ticket_id, "ai", "Support AI", body, db_path)
+    update_ticket(ticket_id, "AI", db_path, status="Waiting on Customer", ai_outcome="pending")
+
+
+def customer_verdict(ticket_id: str, solved: bool, db_path: str = DB_PATH) -> None:
+    """The customer's answer to "Did this solve your problem?" on an AI reply."""
+    if solved:
+        update_ticket(ticket_id, "Customer", db_path, status="Resolved", ai_outcome="solved")
+    else:
+        add_message(ticket_id, "system", "Customer", "Customer said the AI answer did not solve the problem.", db_path)
+        update_ticket(ticket_id, "Customer", db_path, status="Open", ai_outcome="escalated")

@@ -125,6 +125,11 @@ elif ticket["needs_review"]:
 if ticket["routed_by_correction"]:
     match = ticket["routed_by_correction"]
     st.info(f"Routed like human-corrected ticket {match['ticket_id']} ({match['similarity']:.0%} similar).")
+AI_OUTCOME_TEXT = {"pending": ("info", "🤖 AI answered; waiting for the customer to confirm it solved the problem."),
+                   "solved": ("success", "🤖 Solved by the AI: the customer confirmed the answer."),
+                   "escalated": ("warning", "🤖 The AI answer didn't solve it; the customer needs an agent.")}
+if ticket["ai_outcome"]:
+    getattr(st, AI_OUTCOME_TEXT[ticket["ai_outcome"]][0])(AI_OUTCOME_TEXT[ticket["ai_outcome"]][1])
 
 thread_col, side_col = st.columns([3, 2], gap="large")
 

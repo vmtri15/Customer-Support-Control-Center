@@ -18,13 +18,14 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Human-in-the-Loop (HITL)**: Agents correct the department from a dropdown. Corrections apply immediately in the UI and are merged into the training data on the next retrain.
 * **Semi-supervised Training & Versioning**: Unlabelled tickets are labelled by the SVM, or by the LLM when the SVM is unsure (max 20 calls, answers validated against known departments). Each training run is saved as a version in `models/`, with accuracy measured on a held-out 20% of real labels.
 * **AI Reply Drafts (RAG)**: An OpenAI-compatible LLM (`LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`) drafts customer replies, using the agent replies of the 3 most similar past tickets as examples. Agents edit the draft and send it: it is added to the ticket's conversation and, when SMTP is configured and an address is given, emailed to the customer.
+* **AI Solver (auto-resolution)**: When a customer submits a request the classifier is sure about (≥85% confidence, no review flag, not High priority, not Negative), the LLM answers it straight away, grounded only in the agent replies of similar past tickets; it hands over (`ESCALATE`) when those don't cover the request. The customer clicks **Yes, this solved it** (ticket resolved) or **I still need help** (back to the agent queue). Analytics shows the share of AI answers customers accepted.
 * **Vector DB (ChromaDB)**: Tickets are embedded with `all-MiniLM-L6-v2`. Agents can **Show similar past tickets**, and low-confidence tickets that closely match (≥85% similar) a human correction are routed like it immediately, before any retrain. The index rebuilds automatically when `data/tickets.csv` changes.
 
 ## 🔄 The Pipeline
 1. **Ingestion**: Customers submit requests in the **Help Center**, and the demo tickets from `data/tickets.csv` are loaded on first run. Everything is stored in SQLite (`data/support.db`).
 2. **ML Analysis**: Text is preprocessed, vectorized with TF-IDF and classified by the SVM.
 3. **Policy Validation**: Department keywords from `company_policy.json` cross-check the predicted department and set priority.
-4. **Confidence Check**: Confidence < 0.65 or a keyword conflict flags the ticket for **Human Intervention**.
+4. **Confidence Check**: Confidence < 0.65 or a keyword conflict flags the ticket for **Human Intervention**. Confident, calm, non-urgent requests from the Help Center go to the **AI Solver** first.
 5. **Work the queue**: In the **Agent Console**, agents pick tickets from priority-sorted queues, assign them, reply in the conversation thread (AI drafts available), change status (Open → In Progress → Waiting on Customer → Resolved) and confirm or correct the department. Every change is written to the ticket's activity log.
 6. **Customer follow-up**: In the Help Center, customers track a request with its ticket number and email, read the agents' replies and answer. An answer reopens a ticket that was waiting on them or resolved.
 7. **Learn**: Corrections are merged into the training data on the next retrain.
@@ -53,7 +54,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
    Port 465 uses SSL; other ports use STARTTLS unless `SMTP_STARTTLS=false`.
 3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists and fills `data/support.db` with the triaged demo tickets (delete the file to reset the demo).
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
-5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` in `modules/processor.py` to balance automation against human review volume.
+5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` (human review) and `AUTO_SOLVE_CONFIDENCE` (AI Solver) in `modules/processor.py` to balance automation against human workload.
 6. **Check**: `python test_routing.py` (routing and sentiment), `python test_store.py` (ticket store) and `python test_features.py` (training, feedback, Vector DB, email; runs in a temp folder).
 
 ---

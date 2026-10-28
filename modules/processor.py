@@ -12,6 +12,14 @@ from sklearn.svm import LinearSVC
 from sklearn.calibration import CalibratedClassifierCV
 
 CONFIDENCE_THRESHOLD = 0.65
+# The AI solver only answers tickets the classifier is sure about and that aren't urgent or upset
+AUTO_SOLVE_CONFIDENCE = 0.85
+
+
+def auto_solvable(triage: dict) -> bool:
+    """triage: ticket store columns (see store.triage_fields)."""
+    return ((triage.get("confidence") or 0) >= AUTO_SOLVE_CONFIDENCE and not triage.get("needs_review")
+            and triage.get("priority") != "High" and triage.get("sentiment") != "Negative")
 CORRECTION_MATCH_SIMILARITY = 0.85  # cosine similarity để vé độ tự tin thấp đi theo một chỉnh sửa của nhân viên
 
 # Khởi tạo underthesea 1 lần duy nhất ở mức Global để tối ưu tốc độ
@@ -558,6 +566,23 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
         except Exception as e:
             error_msg = f"Lỗi gọi LLM API khi tạo email draft: {e}"
             raise RuntimeError(error_msg)
+
+    def solve_ticket(self, ticket: dict) -> str | None:
+        """AI solver: answer the customer from similar resolved tickets, or None to hand over to an agent."""
+        from modules.llm_client import chat_completion
+
+        examples = self.reply_examples(ticket)
+        if not examples:
+            return None  # nothing to ground an answer in
+        prompt = f"""A customer wrote to support ({ticket.get('category', 'General')} department):
+"{ticket.get('email_content', '')}"
+{examples}
+Write the reply that solves the customer's problem, in the customer's language, addressed to {ticket.get('customer') or 'the customer'}.
+Use only the steps and facts in the sample replies above; never invent policies, prices, links or deadlines.
+Replace template placeholders such as {{{{Order Number}}}} with general wording. Keep it short and end with "The Support Team".
+If the sample replies don't answer this request, or it needs an agent to look at the account or order, output only: ESCALATE"""
+        answer = chat_completion(prompt, system_prompt="You are a careful customer support agent.", temperature=0.3)
+        return None if answer.strip().upper().startswith("ESCALATE") else answer
 
     def process_ticket(self, ticket: dict, prediction: tuple[str, float, dict] | None = None) -> dict:
         """Analyze sentiment, assign tags, classify category and validate routing."""
