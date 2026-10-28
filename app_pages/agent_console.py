@@ -114,6 +114,8 @@ if flash:
     getattr(st, flash[0])(flash[1])
 
 st.subheader(f"{ticket['id']} · {ticket['customer_name'] or 'Customer'}")
+if ticket["subject"]:
+    st.markdown(f"**{ticket['subject']}**")
 st.markdown(f"{PRIORITY_BADGE.get(ticket['priority'], '')} :blue-badge[{ticket['category']}] "
             f":violet-badge[{ticket['status']}] :gray-badge[{ticket['sentiment']}]")
 if ticket["human_reviewed"]:

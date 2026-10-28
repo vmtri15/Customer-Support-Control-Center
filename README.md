@@ -21,12 +21,13 @@ To replace inefficient, manual ticket routing with an automated, AI-driven pipel
 * **Vector DB (ChromaDB)**: Tickets are embedded with `all-MiniLM-L6-v2`. Agents can **Show similar past tickets**, and low-confidence tickets that closely match (≥85% similar) a human correction are routed like it immediately, before any retrain. The index rebuilds automatically when `data/tickets.csv` changes.
 
 ## 🔄 The Pipeline
-1. **Ingestion**: Tickets are stored in SQLite (`data/support.db`), seeded on first run from `data/tickets.csv`.
+1. **Ingestion**: Customers submit requests in the **Help Center**, and the demo tickets from `data/tickets.csv` are loaded on first run. Everything is stored in SQLite (`data/support.db`).
 2. **ML Analysis**: Text is preprocessed, vectorized with TF-IDF and classified by the SVM.
 3. **Policy Validation**: Department keywords from `company_policy.json` cross-check the predicted department and set priority.
 4. **Confidence Check**: Confidence < 0.65 or a keyword conflict flags the ticket for **Human Intervention**.
 5. **Work the queue**: In the **Agent Console**, agents pick tickets from priority-sorted queues, assign them, reply in the conversation thread (AI drafts available), change status (Open → In Progress → Waiting on Customer → Resolved) and confirm or correct the department. Every change is written to the ticket's activity log.
-6. **Learn**: Corrections are merged into the training data on the next retrain.
+6. **Customer follow-up**: In the Help Center, customers track a request with its ticket number and email, read the agents' replies and answer. An answer reopens a ticket that was waiting on them or resolved.
+7. **Learn**: Corrections are merged into the training data on the next retrain.
 
 ## 📊 Data
 `data/tickets.csv` holds ~3,700 labelled tickets (~520 per department): Bitext tickets from the [Bitext customer support dataset](https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset), 250 generated English/Vietnamese Technical tickets (bugs, crashes, slow loading, errors) that Bitext lacks, and 210 original English/Vietnamese tickets. To rebuild it, download the Bitext CSV to `data/bitext/bitext_27k.csv` and run `python convert_bitext.py`. The intent → department mapping and the Technical templates are at the top of that script.
@@ -37,7 +38,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 * `modules/`: Core logic (`processor.py`, `feedback_manager.py`, `llm_client.py`, `vector_store.py`, `embeddings.py`).
 * `data/`: Datasets, `company_policy.json` and `corrections.json`.
 * `models/`: Versioned trained models and `metadata.json`.
-* `ui.py` + `app_pages/`: Streamlit multipage app (Agent Console, Analytics, Admin).
+* `ui.py` + `app_pages/`: Streamlit multipage app (Help Center for customers; Agent Console, Analytics and Admin for the support team).
 * `modules/store.py`: SQLite ticket store (tickets, messages, events, agents).
 * `convert_bitext.py`: Builds `data/tickets.csv` (including Bitext agent replies for RAG).
 * `build_vectordb.py`: Rebuilds the ChromaDB index manually.

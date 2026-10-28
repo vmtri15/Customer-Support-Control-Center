@@ -68,4 +68,14 @@ try:
 except sqlite3.IntegrityError:
     pass
 
+# Portal: lookup needs the matching email; a customer reply reopens the ticket
+assert store.get_customer_ticket(tid.lower(), " CY@example.com ", db)["id"] == tid
+assert store.get_customer_ticket(tid, "other@example.com", db) is None
+assert store.get_customer_ticket("T1", "", db) is None  # seeded tickets have no email
+store.update_ticket(tid, "Sam Lee", db_path=db, status="Waiting on Customer")
+store.customer_reply(tid, "Still crashing", db)
+assert store.get_ticket(tid, db)["status"] == "Open"
+assert store.get_messages(tid, db)[-1]["author_type"] == "customer"
+assert store.get_events(tid, db)[-1]["actor"] == "Customer"
+
 print("✅ store checks passed")

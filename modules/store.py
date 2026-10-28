@@ -271,3 +271,21 @@ def update_ticket(ticket_id: str, actor: str, db_path: str = DB_PATH, **fields) 
         elif "status" in fields and fields["status"] != "Resolved" and row["status"] == "Resolved":
             conn.execute("UPDATE tickets SET resolved_at = NULL WHERE id = ?", (ticket_id,))  # reopened
     return changes
+
+
+def get_customer_ticket(ticket_id: str, email: str, db_path: str = DB_PATH) -> dict | None:
+    """Portal lookup: the ticket only if the email matches the one it was filed with."""
+    ticket = get_ticket(ticket_id.strip().upper(), db_path)
+    if ticket and ticket["customer_email"] and ticket["customer_email"].lower() == email.strip().lower():
+        return ticket
+    return None
+
+
+def customer_reply(ticket_id: str, body: str, db_path: str = DB_PATH) -> None:
+    """The customer answers in the portal; a ticket waiting on them or resolved goes back to Open."""
+    ticket = get_ticket(ticket_id, db_path)
+    if ticket is None:
+        raise KeyError(ticket_id)
+    add_message(ticket_id, "customer", ticket["customer_name"], body, db_path)
+    if ticket["status"] in ("Waiting on Customer", "Resolved"):
+        update_ticket(ticket_id, "Customer", db_path, status="Open")
