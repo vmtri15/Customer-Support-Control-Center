@@ -107,6 +107,14 @@ else:
                 st.session_state.portal_flash = ("info", "Thanks, a support agent will take over your request.")
                 st.rerun()
 
+        if ticket["status"] == "Resolved" and ticket["csat"] is None:
+            st.write("**How did we do?**")
+            rating = st.feedback("stars", key=f"csat_{ticket['id']}")
+            if rating is not None:  # 0-4 index
+                store.rate_ticket(ticket["id"], rating + 1)
+                st.session_state.portal_flash = ("success", "Thanks for your feedback!")
+                st.rerun()
+
         with st.form("customer_reply", clear_on_submit=True):
             reply = st.text_area("Reply", height=100)
             if st.form_submit_button("Send reply", type="primary"):

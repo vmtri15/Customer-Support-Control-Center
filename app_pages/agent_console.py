@@ -1,3 +1,5 @@
+import datetime
+
 import pandas as pd
 import streamlit as st
 
@@ -18,11 +20,14 @@ st.title("Agent Console")
 
 # --- Overview of the open workload ---
 open_tickets = store.list_tickets(statuses=store.OPEN_STATUSES)
-m1, m2, m3, m4 = st.columns(4)
+sla = {t["id"]: store.sla(t) for t in open_tickets}
+m1, m2, m3, m4, m5 = st.columns(5)
 m1.metric("Open tickets", len(open_tickets))
 m2.metric("Needs review", sum(t["needs_review"] and not t["human_reviewed"] for t in open_tickets))
 m3.metric("Unassigned", sum(t["assignee"] is None for t in open_tickets))
 m4.metric("High priority", sum(t["priority"] == "High" for t in open_tickets))
+m5.metric("Overdue", sum(s["overdue"] for s in sla.values()), help="Past the first-reply or resolution target "
+          + ", ".join(f"({p}: {a} h / {b} h)" for p, (a, b) in store.SLA_HOURS.items()))
 
 # --- Queue filters ---
 f1, f2, f3, f4 = st.columns([1.2, 2, 1, 1.5])
@@ -30,7 +35,9 @@ dept = f1.selectbox("Department", ["All"] + departments)
 statuses = f2.multiselect("Status", store.STATUSES, default=store.OPEN_STATUSES)
 who = f3.selectbox("Assignee", ["Anyone", "Me", "Unassigned"])
 search = f4.text_input("Search", placeholder="ID, customer or text")
-review_only = st.toggle("Needs review only")
+t1, t2, _ = st.columns([1, 1, 3])
+review_only = t1.toggle("Needs review only")
+overdue_only = t2.toggle("Overdue only")
 
 queue = store.list_tickets(
     statuses=statuses or None,
@@ -39,6 +46,17 @@ queue = store.list_tickets(
     needs_review=True if review_only else None,
     search=search or None,
 )
+if overdue_only:
+    queue = [t for t in queue if sla.get(t["id"], {}).get("overdue")]
+
+
+def due_text(ticket_id: str) -> str:
+    s = sla.get(ticket_id)
+    if not s or s["next_due"] is None:
+        return "—"
+    hours = (s["next_due"] - datetime.datetime.now()).total_seconds() / 3600
+    return f"⏰ {-hours:.1f} h overdue" if hours < 0 else f"{hours:.1f} h ({s['next_target']})"
+
 
 if not queue:
     st.info("No tickets match these filters.")
@@ -46,7 +64,7 @@ if not queue:
 
 queue_df = pd.DataFrame([{
     "ID": t["id"], "Priority": t["priority"], "Department": t["category"],
-    "Confidence": t["confidence"], "Status": t["status"], "Assignee": t["assignee"] or "—",
+    "Confidence": t["confidence"], "Status": t["status"], "Due": due_text(t["id"]), "Assignee": t["assignee"] or "—",
     "Customer": t["customer_name"], "Message": t["content"][:90], "Created": t["created_at"].replace("T", " "),
 } for t in queue])
 st.caption(f"{len(queue)} tickets · highest priority first, then oldest")
@@ -125,6 +143,12 @@ elif ticket["needs_review"]:
 if ticket["routed_by_correction"]:
     match = ticket["routed_by_correction"]
     st.info(f"Routed like human-corrected ticket {match['ticket_id']} ({match['similarity']:.0%} similar).")
+ticket_sla = store.sla(ticket)
+if ticket_sla["overdue"]:
+    late_h = (datetime.datetime.now() - ticket_sla["next_due"]).total_seconds() / 3600
+    target_h = store.SLA_HOURS.get(ticket["priority"], store.SLA_HOURS["Medium"])[ticket_sla["next_target"] == "resolution"]
+    st.error(f"⏰ {ticket_sla['next_target'].capitalize()} overdue by {late_h:.1f} h "
+             f"(target {target_h} h for {ticket['priority']} priority).")
 AI_OUTCOME_TEXT = {"pending": ("info", "🤖 AI answered; waiting for the customer to confirm it solved the problem."),
                    "solved": ("success", "🤖 Solved by the AI: the customer confirmed the answer."),
                    "escalated": ("warning", "🤖 The AI answer didn't solve it; the customer needs an agent.")}

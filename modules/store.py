@@ -4,6 +4,7 @@ Each call opens its own connection, so it is safe from Streamlit's threads.
 """
 import datetime
 import json
+import random
 import sqlite3
 import uuid
 from pathlib import Path
@@ -17,6 +18,8 @@ PRIORITIES = ["High", "Medium", "Low"]
 EDITABLE_FIELDS = {"status", "assignee", "category", "priority", "needs_review", "human_reviewed", "ai_outcome"}
 # AI solver result: pending = answered, waiting for the customer's verdict
 AI_OUTCOMES = [None, "pending", "solved", "escalated"]
+# Response-time targets in hours, by priority: (first reply, resolution)
+SLA_HOURS = {"High": (1, 8), "Medium": (4, 24), "Low": (24, 72)}
 
 DEMO_AGENTS = [
     ("Alex Kim", "Technical"), ("Sam Lee", "Billing"), ("Linh Tran", "Logistics"),
@@ -43,6 +46,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     human_reviewed INTEGER NOT NULL DEFAULT 0,
     routed_by_correction TEXT,
     ai_outcome TEXT,
+    csat INTEGER CHECK (csat BETWEEN 1 AND 5),
     channel TEXT NOT NULL DEFAULT 'email',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL,
@@ -93,8 +97,10 @@ def init_db(db_path: str = DB_PATH) -> None:
     with connect(db_path) as conn:
         conn.execute("PRAGMA journal_mode = WAL")  # readers don't block the writer
         conn.executescript(SCHEMA)
-        if "ai_outcome" not in {r["name"] for r in conn.execute("PRAGMA table_info(tickets)")}:
-            conn.execute("ALTER TABLE tickets ADD COLUMN ai_outcome TEXT")  # databases from before Phase 3
+        columns = {r["name"] for r in conn.execute("PRAGMA table_info(tickets)")}
+        for column, ddl in [("ai_outcome", "TEXT"), ("csat", "INTEGER CHECK (csat BETWEEN 1 AND 5)")]:
+            if column not in columns:  # databases created by an older version
+                conn.execute(f"ALTER TABLE tickets ADD COLUMN {column} {ddl}")
         conn.executemany(
             "INSERT OR IGNORE INTO agents (name, email, department) VALUES (?, ?, ?)",
             [(name, f"{name.split()[0].lower()}@example.com", dept) for name, dept in DEMO_AGENTS],
@@ -151,20 +157,90 @@ def create_ticket(customer_name: str, customer_email: str | None, subject: str |
     return ticket_id
 
 
-def seed_from_processed(processed_tickets: list[dict], db_path: str = DB_PATH) -> int:
-    """Load the processed demo tickets (from tickets.csv) if the store is empty. Returns rows added."""
-    status_map = {"Open": "Open", "Pending": "Waiting on Customer", "Closed": "Resolved"}
+def seed_from_processed(processed_tickets: list[dict], db_path: str = DB_PATH, days: int = 30,
+                        seed: int = 42) -> int:
+    """Load the processed demo tickets (from tickets.csv) if the store is empty, with a made-up but realistic
+    history over the last `days`: older tickets were answered and resolved by the department's agent (mostly
+    within target, some late, some rated), recent ones are still in the queue. Returns rows added."""
+    rng = random.Random(seed)
+    end = datetime.datetime.now().replace(microsecond=0)
+    agent_for = {dept: name for name, dept in DEMO_AGENTS}
+    iso = lambda dt: dt.isoformat(timespec="seconds")  # noqa: E731
     with connect(db_path) as conn:
         if conn.execute("SELECT COUNT(*) FROM tickets").fetchone()[0]:
             return 0
         for t in processed_tickets:
-            _insert_ticket(
-                conn, str(t["id"]), t.get("customer") or t.get("customer_name"), None, None,
-                str(t["email_content"]), triage_fields(t), "email",
-                status_map.get(t.get("status"), "Open"),
-                str(t.get("timestamp") or now()).replace(" ", "T"), tier=t.get("tier"),
-            )
+            triage = triage_fields(t)
+            first_h, resolve_h = SLA_HOURS.get(triage["priority"], SLA_HOURS["Medium"])
+            late = rng.random() < 0.15
+            created = end - datetime.timedelta(hours=rng.uniform(0, days * 24))
+            replied = created + datetime.timedelta(hours=rng.uniform(0.05, 1) * first_h * (2.5 if late else 1))
+            resolved = replied + datetime.timedelta(hours=rng.uniform(0.1, 1) * (resolve_h - first_h) * (2 if late else 1))
+            if resolved <= end and rng.random() < 0.99:  # a few old tickets got stuck: overdue demo
+                status = "Resolved"
+            elif replied <= end:
+                status = rng.choice(["In Progress", "Waiting on Customer"])
+            else:
+                status, replied = "Open", None
+            ticket_id = str(t["id"])
+            name = t.get("customer") or t.get("customer_name")
+            _insert_ticket(conn, ticket_id, name, None, None, str(t["email_content"]), triage, "email",
+                           status, iso(created), tier=t.get("tier"))
+            if replied is None:
+                continue
+            agent = agent_for.get(triage["category"], DEMO_AGENTS[-1][0])
+            response = t.get("response")
+            body = response if isinstance(response, str) and response.strip() else \
+                f"Hi {name or 'there'}, thanks for contacting us. Our {triage['category']} team is looking into this."
+            csat = None
+            if status == "Resolved" and rng.random() < 0.4:
+                csat = rng.choice([3, 2, 1, 3, 4] if late else [5, 5, 4, 4, 3])
+            conn.execute("UPDATE tickets SET assignee = ?, first_response_at = ?, resolved_at = ?, updated_at = ?, "
+                         "csat = ? WHERE id = ?",
+                         (agent, iso(replied), iso(resolved) if status == "Resolved" else None,
+                          iso(resolved if status == "Resolved" else replied), csat, ticket_id))
+            conn.executemany(
+                "INSERT INTO events (ticket_id, actor, type, detail, created_at) VALUES (?, ?, ?, ?, ?)",
+                [(ticket_id, agent, "assignee", f"None → {agent}", iso(replied)),
+                 (ticket_id, agent, "message", "agent replied", iso(replied))]
+                + ([(ticket_id, agent, "status", "Open → Resolved", iso(resolved))] if status == "Resolved" else []))
+            conn.execute("INSERT INTO messages (ticket_id, author_type, author, body, created_at) "
+                         "VALUES (?, 'agent', ?, ?, ?)", (ticket_id, agent, body.strip(), iso(replied)))
     return len(processed_tickets)
+
+
+def sla(ticket: dict, at: datetime.datetime | None = None) -> dict:
+    """Response-time targets for a ticket: due times, whether each was missed, and what is due next."""
+    # ponytail: nothing is due from agents while Waiting on Customer, but that time still counts toward
+    # the resolution target once the customer answers; subtract waiting time if that proves unfair
+    at = at or datetime.datetime.now()
+    created = datetime.datetime.fromisoformat(ticket["created_at"])
+    first_h, resolve_h = SLA_HOURS.get(ticket["priority"], SLA_HOURS["Medium"])
+    out = {}
+    for name, hours, done in [("first_response", first_h, ticket["first_response_at"]),
+                              ("resolution", resolve_h, ticket["resolved_at"])]:
+        due = created + datetime.timedelta(hours=hours)
+        finished = datetime.datetime.fromisoformat(done) if done else None
+        out[f"{name}_due"] = due
+        out[f"{name}_breached"] = (finished or at) > due
+    if ticket["resolved_at"] or ticket.get("status") == "Waiting on Customer":
+        out["next_due"], out["next_target"] = None, None
+    elif not ticket["first_response_at"]:
+        out["next_due"], out["next_target"] = out["first_response_due"], "first reply"
+    else:
+        out["next_due"], out["next_target"] = out["resolution_due"], "resolution"
+    out["overdue"] = out["next_due"] is not None and at > out["next_due"]
+    return out
+
+
+def rate_ticket(ticket_id: str, rating: int, db_path: str = DB_PATH) -> None:
+    """Customer satisfaction, 1-5 stars, on a resolved ticket."""
+    if rating not in range(1, 6):
+        raise ValueError("Rating must be 1-5")
+    with connect(db_path) as conn:
+        conn.execute("UPDATE tickets SET csat = ? WHERE id = ?", (rating, ticket_id))
+        conn.execute("INSERT INTO events (ticket_id, actor, type, detail, created_at) "
+                     "VALUES (?, 'Customer', 'csat', ?, ?)", (ticket_id, f"Rated {rating}/5", now()))
 
 
 def _ticket_dict(row: sqlite3.Row) -> dict:
