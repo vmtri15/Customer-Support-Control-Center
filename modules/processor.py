@@ -580,7 +580,9 @@ Chỉ xuất ra nội dung email hoàn chỉnh, không giải thích gì thêm:
 Write the reply that solves the customer's problem, in the customer's language, addressed to {ticket.get('customer') or 'the customer'}.
 Use only the steps and facts in the sample replies above; never invent policies, prices, links or deadlines.
 Replace template placeholders such as {{{{Order Number}}}} with general wording. Keep it short and end with "The Support Team".
-If the sample replies don't answer this request, or it needs an agent to look at the account or order, output only: ESCALATE"""
+When the sample replies give steps the customer can follow themselves, answer with those steps.
+Output only ESCALATE when the sample replies don't cover this request, or when solving it needs the support team
+to check or change something for this specific customer (an order's status, a refund decision, account data)."""
         answer = chat_completion(prompt, system_prompt="You are a careful customer support agent.", temperature=0.3)
         return None if answer.strip().upper().startswith("ESCALATE") else answer
 

@@ -13,7 +13,8 @@ _client = None
 def get_llm_client() -> OpenAI:
     global _client
     if _client is None:
-        _client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
+        # The Help Center waits on the AI Solver: fail over to an agent fast (defaults: 10-min timeout, 2 retries)
+        _client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30, max_retries=0)
     return _client
 
 
