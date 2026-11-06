@@ -73,7 +73,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
 
 ## 🚀 Deploy (Streamlit Community Cloud)
 1. Push the repo to GitHub, then at [share.streamlit.io](https://share.streamlit.io) create an app from it with main file `ui.py` and Python 3.12.
-2. In the app's **Secrets**, paste the contents of [`.streamlit/secrets.toml.example`](.streamlit/secrets.toml.example) with your own LLM key (top-level secrets become environment variables). Leave out `AGENT_PASSWORD` for an open demo where visitors can sign in as any agent.
+2. In the app's **Secrets**, paste the contents of [`.streamlit/secrets.toml.example`](.streamlit/secrets.toml.example) with your own LLM key (top-level secrets become environment variables). Leave out `AGENT_PASSWORD` for an open demo where visitors can sign in as any agent (model training on the Admin page is then turned off).
 3. The first boot trains the model, downloads the embedding model and seeds the demo database (a few minutes). The file system is not persistent, so the demo resets when the app restarts.
 
 **Public-demo limits** (counted in the database, so reloading the page doesn't reset them): `LLM_DAILY_LIMIT` LLM calls per 24 h across the AI Solver and agent drafts (default 100), `TICKETS_PER_EMAIL_HOURLY` (3) and `TICKETS_HOURLY` (60) Help Center submissions, and 4,000 characters per message. Every LLM call is written to the ticket's activity log.
@@ -98,7 +98,7 @@ Known gaps: Bitext and the Technical tickets are template-based, so held-out acc
    export SMTP_USER=support@yourcompany.com SMTP_PASSWORD='your-app-password'
    ```
    Port 465 uses SSL; other ports use STARTTLS unless `SMTP_STARTTLS=false`.
-3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists and fills `data/support.db` with the triaged demo tickets, given a generated 30-day history (agent replies from the dataset, mostly on time, some late, some rated) so the metrics have something to show. Delete the file to reset the demo.
+3. **Launch UI**: `streamlit run ui.py`. The first start trains a model if none exists and fills `data/support.db` with the triaged demo tickets, given a generated 30-day history (agent replies from the dataset, mostly on time, some late, some rated; about 1 in 4 tickets answered by the AI Solver first, ~70% of those confirmed solved) so the metrics have something to show. Delete the file to reset the demo.
 4. **Retrain**: In the Admin Dashboard tab, upload a new dataset or click **Retrain with corrections**.
 5. **Calibrate**: Adjust `CONFIDENCE_THRESHOLD` (human review) and `AUTO_SOLVE_CONFIDENCE` (AI Solver) in `modules/processor.py` to balance automation against human workload.
 6. **Check** (also run by CI): `python test_routing.py` (routing and sentiment), `python test_store.py` (ticket store) and `python test_features.py` (training, feedback, Vector DB, email; runs in a temp folder).

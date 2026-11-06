@@ -78,11 +78,11 @@ with col1:
     st.write("**Tickets by department**")
     fig = px.pie(df, names="category", hole=0.4, color_discrete_sequence=px.colors.qualitative.Pastel)
     fig.update_traces(hovertemplate="<b>%{label}</b><br>Tickets: %{value}<extra></extra>")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 with col2:
     st.write("**Status by department**")
     st.plotly_chart(px.histogram(df, y="category", color="status", barmode="stack",
-                                 category_orders={"status": store.STATUSES}), use_container_width=True)
+                                 category_orders={"status": store.STATUSES}), width="stretch")
 
 st.write("**AI confidence by department**")
-st.plotly_chart(px.box(df, x="category", y="confidence", color="category"), use_container_width=True)
+st.plotly_chart(px.box(df, x="category", y="confidence", color="category"), width="stretch")

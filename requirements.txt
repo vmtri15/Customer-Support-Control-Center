@@ -1,3 +1,6 @@
+# CPU-only PyTorch: sentence-transformers would otherwise pull the multi-GB CUDA build (too big for free hosts)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
 pandas>=2.0.0
 openai>=1.0.0
 requests>=2.28.0

@@ -35,6 +35,8 @@ if view != VIEWS[1]:
         email = c2.text_input("Email")
         subject = st.text_input("Subject")
         content = st.text_area("How can we help?", height=150, max_chars=common.MAX_MESSAGE_CHARS)
+        st.caption("Demo site: your message may be answered by an AI model from an external provider, which may "
+                   "use it to improve its models. Please don't include personal or sensitive information.")
         submitted = st.form_submit_button("Submit request", type="primary")
     if submitted:
         if not (name.strip() and content.strip()):

@@ -15,8 +15,6 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      # CPU-only torch keeps the install small (sentence-transformers would pull the CUDA build)
-      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: pip install -r requirements.txt
       - run: python test_store.py
       - run: python test_routing.py

@@ -161,7 +161,11 @@ def seed_from_processed(processed_tickets: list[dict], db_path: str = DB_PATH, d
                         seed: int = 42) -> int:
     """Load the processed demo tickets (from tickets.csv) if the store is empty, with a made-up but realistic
     history over the last `days`: older tickets were answered and resolved by the department's agent (mostly
-    within target, some late, some rated), recent ones are still in the queue. Returns rows added."""
+    within target, some late, some rated), recent ones are still in the queue. About a third of the tickets the
+    AI Solver may answer got an AI reply first: most were confirmed solved, some escalated to an agent, the
+    newest still await the customer's verdict. Returns rows added."""
+    from modules.processor import auto_solvable  # lazy: the store itself doesn't need the ML stack
+
     rng = random.Random(seed)
     end = datetime.datetime.now().replace(microsecond=0)
     agent_for = {dept: name for name, dept in DEMO_AGENTS}
@@ -174,6 +178,39 @@ def seed_from_processed(processed_tickets: list[dict], db_path: str = DB_PATH, d
             first_h, resolve_h = SLA_HOURS.get(triage["priority"], SLA_HOURS["Medium"])
             late = rng.random() < 0.15
             created = end - datetime.timedelta(hours=rng.uniform(0, days * 24))
+            ticket_id = str(t["id"])
+            name = t.get("customer") or t.get("customer_name")
+            response = t.get("response")
+            has_response = isinstance(response, str) and response.strip()
+
+            ai_at = created + datetime.timedelta(minutes=rng.uniform(0.3, 2))
+            outcome = None
+            if has_response and auto_solvable(triage) and rng.random() < 0.35 and ai_at <= end:
+                verdict_at = ai_at + datetime.timedelta(hours=rng.uniform(0.1, 6))
+                outcome = "pending" if verdict_at > end else ("solved" if rng.random() < 0.7 else "escalated")
+                _insert_ticket(conn, ticket_id, name, None, None, str(t["email_content"]), triage, "web",
+                               "Open", iso(created), tier=t.get("tier"))
+                conn.execute("INSERT INTO messages (ticket_id, author_type, author, body, created_at) "
+                             "VALUES (?, 'ai', 'Support AI', ?, ?)", (ticket_id, response.strip(), iso(ai_at)))
+                conn.executemany(
+                    "INSERT INTO events (ticket_id, actor, type, detail, created_at) VALUES (?, ?, ?, ?, ?)",
+                    [(ticket_id, "AI", "llm", "solver", iso(ai_at)), (ticket_id, "AI", "message", "ai replied", iso(ai_at))]
+                    + ([(ticket_id, "Customer", "ai_outcome", f"pending → {outcome}", iso(verdict_at))]
+                       if outcome != "pending" else []))
+                if outcome != "escalated":
+                    solved = outcome == "solved"
+                    csat = rng.choice([5, 5, 4, 5, 3]) if solved and rng.random() < 0.4 else None
+                    conn.execute("UPDATE tickets SET status = ?, ai_outcome = ?, first_response_at = ?, resolved_at = ?, "
+                                 "updated_at = ?, csat = ? WHERE id = ?",
+                                 ("Resolved" if solved else "Waiting on Customer", outcome, iso(ai_at),
+                                  iso(verdict_at) if solved else None, iso(verdict_at if solved else ai_at), csat,
+                                  ticket_id))
+                    continue
+                conn.execute("INSERT INTO messages (ticket_id, author_type, author, body, created_at) VALUES "
+                             "(?, 'system', 'Customer', 'Customer said the AI answer did not solve the problem.', ?)",
+                             (ticket_id, iso(verdict_at)))
+                created = verdict_at  # an agent takes over from here, as with any new ticket
+
             replied = created + datetime.timedelta(hours=rng.uniform(0.05, 1) * first_h * (2.5 if late else 1))
             resolved = replied + datetime.timedelta(hours=rng.uniform(0.1, 1) * (resolve_h - first_h) * (2 if late else 1))
             if resolved <= end and rng.random() < 0.99:  # a few old tickets got stuck: overdue demo
@@ -182,21 +219,22 @@ def seed_from_processed(processed_tickets: list[dict], db_path: str = DB_PATH, d
                 status = rng.choice(["In Progress", "Waiting on Customer"])
             else:
                 status, replied = "Open", None
-            ticket_id = str(t["id"])
-            name = t.get("customer") or t.get("customer_name")
-            _insert_ticket(conn, ticket_id, name, None, None, str(t["email_content"]), triage, "email",
-                           status, iso(created), tier=t.get("tier"))
+            if outcome is None:
+                _insert_ticket(conn, ticket_id, name, None, None, str(t["email_content"]), triage, "email",
+                               status, iso(created), tier=t.get("tier"))
+            else:  # escalated: the ticket row exists; the AI reply already was the first response
+                conn.execute("UPDATE tickets SET status = ?, ai_outcome = 'escalated', first_response_at = ?, "
+                             "updated_at = ? WHERE id = ?", (status, iso(ai_at), iso(created), ticket_id))
             if replied is None:
                 continue
             agent = agent_for.get(triage["category"], DEMO_AGENTS[-1][0])
-            response = t.get("response")
-            body = response if isinstance(response, str) and response.strip() else \
+            body = response if has_response else \
                 f"Hi {name or 'there'}, thanks for contacting us. Our {triage['category']} team is looking into this."
             csat = None
             if status == "Resolved" and rng.random() < 0.4:
                 csat = rng.choice([3, 2, 1, 3, 4] if late else [5, 5, 4, 4, 3])
-            conn.execute("UPDATE tickets SET assignee = ?, first_response_at = ?, resolved_at = ?, updated_at = ?, "
-                         "csat = ? WHERE id = ?",
+            conn.execute("UPDATE tickets SET assignee = ?, first_response_at = COALESCE(first_response_at, ?), "
+                         "resolved_at = ?, updated_at = ?, csat = ? WHERE id = ?",
                          (agent, iso(replied), iso(resolved) if status == "Resolved" else None,
                           iso(resolved if status == "Resolved" else replied), csat, ticket_id))
             conn.executemany(

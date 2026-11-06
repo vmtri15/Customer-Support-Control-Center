@@ -31,14 +31,17 @@ assert store.get_messages("T1", db)[0]["author_type"] == "customer"
 # Seeded history over 30 days is consistent: replies after creation, resolution after the reply
 hist_db = os.path.join(tempfile.mkdtemp(), "hist.db")
 store.init_db(hist_db)
-many = [{**processed[i % 2], "id": f"H{i}", "response": "Here is how to fix it." if i % 3 else float("nan")}
-        for i in range(300)]
+solvable = {**processed[0], "routing_validation": {"priority": "Medium", "requires_human_review": False}}
+many = [{**[processed[0], processed[1], solvable][i % 3], "id": f"H{i}",
+         "response": "Here is how to fix it." if i % 4 else float("nan")} for i in range(600)]
 store.seed_from_processed(many, hist_db)
 hist = store.list_tickets(db_path=hist_db)
 statuses = {t["status"] for t in hist}
 assert {"Open", "Resolved"} <= statuses, statuses
 for t in hist:
     msgs = store.get_messages(t["id"], hist_db)
+    if t["ai_outcome"]:  # checked below
+        continue
     if t["status"] == "Open":
         assert t["first_response_at"] is None and len(msgs) == 1
         continue
@@ -51,6 +54,21 @@ for t in hist:
 breached = [store.sla(t)["first_response_breached"] for t in hist if t["first_response_at"]]
 assert 0 < sum(breached) < len(breached) / 2, sum(breached)  # mostly on time, some late
 assert any(t["csat"] for t in hist)
+
+# Some AI-solvable tickets were answered by the AI first; its reply is the first response
+ai = [t for t in hist if t["ai_outcome"]]
+assert {t["ai_outcome"] for t in ai} >= {"solved", "escalated"}, {t["ai_outcome"] for t in ai}
+for t in ai:
+    msgs = store.get_messages(t["id"], hist_db)
+    assert t["channel"] == "web" and msgs[1]["author_type"] == "ai" and t["first_response_at"] == msgs[1]["created_at"]
+    if t["ai_outcome"] == "solved":
+        assert t["status"] == "Resolved" and t["assignee"] is None
+    elif t["ai_outcome"] == "escalated":
+        assert msgs[2]["author_type"] == "system"
+        assert t["status"] == "Open" or msgs[-1]["author_type"] == "agent"
+    else:
+        assert t["status"] == "Waiting on Customer"
+assert all(t["ai_outcome"] is None for t in hist if t["priority"] == "High")  # never for urgent tickets
 
 # Queue: priority first, filters
 tid = store.create_ticket("Cy", "cy@example.com", "App down", "  The app crashes  ", {**triage, "priority": "Low"}, db_path=db)
