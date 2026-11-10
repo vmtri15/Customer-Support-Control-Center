@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/vmtri15/Customer-Support-Control-Center/actions/workflows/tests.yml/badge.svg)](https://github.com/vmtri15/Customer-Support-Control-Center/actions/workflows/tests.yml)
 
+**Project page: [vmtri15.github.io/Customer-Support-Control-Center](https://vmtri15.github.io/Customer-Support-Control-Center/)**
+
 A complete support desk built with Streamlit: customers submit and track requests in a **Help Center**, an ML classifier routes every ticket to the right department, an **AI Solver** answers the easy ones (and the customer confirms it worked), and agents work the rest in an **Agent Console** with response-time targets, AI reply drafts and analytics.
 
 | Help Center (AI answer awaiting the customer's verdict) | Agent Console (priority queue, due times) |
